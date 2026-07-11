@@ -1,0 +1,31 @@
+# Dependencies & build output
+node_modules/
+dist/
+build/
+.vite/
+
+# Real data / backups — never commit anything that could hold real financial data.
+# This is a backstop, not a substitute for checking `git status` before committing.
+# (Targets file extensions/dirs, not src/export or src/storage source code.)
+*.db
+*.sqlite
+*.sqlite3
+*.enc
+*.locked
+*.csv
+/backups/
+/data/
+fixtures/local/
+
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+google-*.json
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
