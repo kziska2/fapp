@@ -30,13 +30,17 @@ debt section.
    sign in → enter passphrase → continue where you left off. Manual locked backup/export
    as a secondary safety net.
 
-3. **Tidy merchant names + per-store spending views.** Add the merchant field with
-   autocomplete (replacing/augmenting today's free-text detail field), and build the
-   views for "spending at [merchant], this month / all-time."
+3. **Tidy merchant names + search.** Add the merchant field with autocomplete
+   (replacing/augmenting today's free-text detail field), and build the smart search bar
+   (vendor, category, or note-text lookup with live autocomplete) plus advanced search
+   (combine date, amount, category, type, merchant, and note filters) and saved searches.
+   Full spec: `docs/SUMMARY_AND_SEARCH.md`.
 
 4. **Manual income & richer summaries.** Make sure income entry is well-supported
    (already partially there) and extend the summary screen with the drill-downs described
-   in the original request (e.g., discretionary spending for a selected month).
+   in the original request, plus the new at-a-glance stats: budget spent this month,
+   earned this year with an on-track indicator, invested (this year + all-time
+   contributions), and last three purchases. Full spec: `docs/SUMMARY_AND_SEARCH.md`.
 
 5. **On-demand readable spreadsheet export.** The one intentional unencrypted output,
    built last since it's an add-on, not core functionality.

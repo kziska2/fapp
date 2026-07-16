@@ -1,8 +1,9 @@
 # Data model
 
 What the app remembers, in plain terms. This reflects the categories/behavior already
-built in the prototype (`finance-app-latest.jsx`), plus the additions needed for
-per-merchant totals and the future debt section.
+built in the prototype (`finance-app-latest.jsx`), plus the additions needed for search
+(merchants, categories, note text, saved searches), the Summary tab's at-a-glance stats,
+and the future debt section.
 
 ## Transactions (income & expenses)
 
@@ -44,6 +45,28 @@ splitting your totals across near-duplicates.
 Both are the same underlying query with or without a date filter — reliable because the
 merchant name is consistent, not because of any special-casing.
 
+## Search
+
+Full behavior (the Summary tab's search bar and advanced search) is described in
+`docs/SUMMARY_AND_SEARCH.md`. What that feature needs from the data model:
+
+- The **merchant list** above, kept tidy via autocomplete.
+- A running, de-duplicated list of **categories** (already tracked — see Categories
+  below) — searchable the same way as merchants.
+- The **note** field on each transaction, indexed so a typed word or phrase can find
+  every entry whose note contains it.
+
+Typing a term checks it against all three at once (merchant names, category names, and
+note text) and suggests matches from whichever it finds — that's what powers the "type
+'chip,' see Chipotle, a 'chips' category, and a note mentioning chips" behavior.
+
+Advanced search combines several of these at once — date range, amount range, category,
+type, merchant, note text — plus:
+
+| Field | What it means |
+|---|---|
+| Saved searches | A name you give a set of filters, so it can be re-run with one tap instead of rebuilt each time |
+
 ## Categories
 
 The existing category list from the prototype, customizable (add/rename/re-type):
@@ -74,12 +97,19 @@ Income is logged as a transaction (`type = income`) with a source (salary, freel
 investment, gift, other) — no separate income table needed; it's the same transactions
 list filtered by type.
 
+**Income baseline (for "are you on track this year")** — the first year you use the app,
+you enter an **expected yearly earnings** figure once; it's saved as your baseline for
+that year. Every year after, no re-entry is needed — the baseline becomes what you
+actually earned the prior year (summed from your income transactions). See
+`docs/SUMMARY_AND_SEARCH.md` for how this drives the Summary tab.
+
 ## Investments
 
 One row per position, as already modeled in the prototype:
 
 | Field | What it means |
 |---|---|
+| Date | *New* — when this contribution was made, so "this year vs. all-time" can be split out |
 | Ticker / name | e.g. VOO |
 | Shares | Quantity held |
 | Cost per share | What you paid |
@@ -88,7 +118,11 @@ One row per position, as already modeled in the prototype:
 | Note | Optional, e.g. which brokerage/account |
 
 This is a manual ledger of what you hold and where — not a live market-price feed (no
-external service needed, keeps things free and simple).
+external service needed, keeps things free and simple). The Summary tab's "invested"
+stat (see `docs/SUMMARY_AND_SEARCH.md`) sums cost (shares × cost per share) across
+positions — this year's (filtered by the new Date field) and all-time (no date filter)
+— using cost basis only; it doesn't need a market-value/price field, since it's about
+money put in, not what it's grown or shrunk to.
 
 ## Retirement planning (not stored data, but derived from settings)
 
