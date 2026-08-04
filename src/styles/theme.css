@@ -167,9 +167,15 @@ button, input, select { font-family: inherit; }
 .tabbtn svg { width: 19px; height: 19px; }
 
 /* ── shared bits ───────────────────────────────────────────────────────── */
+/* Baseline for every input/select in the app — anything smaller makes iOS
+   Safari (and installed PWAs, which have no browser chrome to pinch back out
+   of) zoom in on focus and stay zoomed. More specific rules below can go
+   bigger, never smaller. */
+input, select, textarea { font-size: 16px; font-family: inherit; }
+
 .field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
 .field input, .field select {
-  width: 100%; font-size: 14px; padding: 8px 10px; border-radius: 8px;
+  width: 100%; font-size: 16px; padding: 8px 10px; border-radius: 8px;
   border: 1px solid var(--border-secondary); background: var(--bg-primary); color: var(--text-primary);
   font-family: inherit;
 }
@@ -304,7 +310,7 @@ button, input, select { font-family: inherit; }
 /* ── Search ────────────────────────────────────────────────────────────── */
 .searchbox { position: relative; margin: 2px 0 0; }
 .searchbox .row { display: flex; gap: 6px; }
-.searchbox input { flex: 1; font-size: 13.5px; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border-secondary); background: var(--bg-secondary); color: var(--text-primary); font-family: inherit; }
+.searchbox input { flex: 1; font-size: 16px; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border-secondary); background: var(--bg-secondary); color: var(--text-primary); font-family: inherit; }
 .suggest { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 5; background: var(--bg-primary); border: 1px solid var(--border-secondary); border-radius: 9px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); overflow: hidden; }
 .suggest .opt { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; font-size: 13px; background: none; border: none; width: 100%; text-align: left; color: var(--text-primary); }
 .suggest .opt:hover { background: var(--bg-secondary); }
@@ -317,7 +323,7 @@ button, input, select { font-family: inherit; }
 .advanced-search { margin-top: 8px; }
 .advanced-panel { background: var(--bg-secondary); border: 1px solid var(--border-tertiary); border-radius: 10px; padding: 10px 11px; margin-top: 6px; }
 .save-search-row { display: flex; gap: 8px; margin-top: 10px; }
-.save-search-row input { flex: 1; font-size: 13px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-secondary); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
+.save-search-row input { flex: 1; font-size: 16px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-secondary); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
 .period-card .saved-name { font-size: 12.5px; font-weight: 650; flex: 1; }
 
 .result-card { background: var(--bg-secondary); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0 0; }
@@ -351,7 +357,7 @@ button, input, select { font-family: inherit; }
 .budgetrow .bnote { font-size: 8.5px; color: var(--text-tertiary); margin-top: 1px; }
 .budgetrow .bamt { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
 .budgetrow .bamt .cur { font-size: 12.5px; color: var(--text-tertiary); }
-.budgetrow .bamt input { width: 56px; font-size: 13px; font-weight: 650; text-align: right; border: none; background: none; color: var(--text-primary); font-family: inherit; padding: 2px 0; }
+.budgetrow .bamt input { width: 64px; font-size: 16px; font-weight: 650; text-align: right; border: none; background: none; color: var(--text-primary); font-family: inherit; padding: 2px 0; }
 .budgetrow .bamt input:focus { outline: none; border-bottom: 1px solid var(--accent-necessary); }
 .budgetrow .del { color: var(--text-tertiary); cursor: pointer; flex-shrink: 0; margin-left: 1px; background: none; border: none; padding: 0; }
 .budgetrow .del svg { width: 13px; height: 13px; display: block; }

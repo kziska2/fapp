@@ -68,12 +68,12 @@ export default function CategorySettings() {
           <input
             defaultValue={cat.label}
             onBlur={(e) => e.target.value.trim() && e.target.value !== cat.label && rename(cat.id, e.target.value.trim())}
-            style={{ flex: 1, fontSize: 13, fontWeight: 500, border: 'none', background: 'none', color: 'var(--text-primary)', padding: '4px 0' }}
+            style={{ flex: 1, fontSize: 16, fontWeight: 500, border: 'none', background: 'none', color: 'var(--text-primary)', padding: '4px 0' }}
           />
           <select
             value={cat.type}
             onChange={(e) => retype(cat.id, e.target.value)}
-            style={{ fontSize: 11, fontWeight: 500 }}
+            style={{ fontSize: 16, fontWeight: 500 }}
           >
             {TYPE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
