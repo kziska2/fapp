@@ -50,7 +50,7 @@ export default function Retirement() {
     const r = cfg.annualReturn / 100, mR = r / 12, mo = years * 12;
     const total = cfg.startAmount * Math.pow(1 + r, years) + (mR > 0 ? cfg.monthlyContrib * ((Math.pow(1 + mR, mo) - 1) / mR) : cfg.monthlyContrib * mo);
     const annualWithdrawal4 = total * (cfg.withdrawal / 100);
-    const n = (100 - cfg.retireAge) * 12, disc = Math.pow(1 + mR, -n);
+    const n = (105 - cfg.retireAge) * 12, disc = Math.pow(1 + mR, -n);
     const spendDownMonthly = n > 0 ? ((total - 100000 * disc) * mR) / (1 - disc) : 0;
     return { total, annualWithdrawal4, monthlyWithdrawal4: annualWithdrawal4 / 12, spendDownMonthly, years };
   }, [cfg]);
@@ -68,7 +68,7 @@ export default function Retirement() {
       </div>
       {calc && (
         <div style={{ borderTop: '0.5px solid var(--border-tertiary)', paddingTop: '1.25rem' }}>
-          <h3 style={{ fontSize: 14, fontWeight: 500, margin: '0 0 12px' }}>Portfolio lifecycle · age {cfg.currentAge} → 100</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 500, margin: '0 0 12px' }}>Portfolio lifecycle · age {cfg.currentAge} → 105</h3>
           <RetirementChart cfg={cfg} calc={calc} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, margin: '1.25rem 0' }}>
             <div style={{ ...mCard, gridColumn: '1 / -1' }}>
@@ -83,9 +83,9 @@ export default function Retirement() {
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{fmt(calc.annualWithdrawal4)}/yr · portfolio preserved</div>
             </div>
             <div style={{ ...sCard, borderLeft: '3px solid var(--accent-purple)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 4 }}>Spend down to $100k by age 100</div>
+              <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 4 }}>Spend down to $100k by age 105</div>
               <div style={{ fontSize: 18, fontWeight: 500, color: 'var(--accent-purple)' }}>{fmt(calc.spendDownMonthly)}<span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>/mo</span></div>
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{fmt(calc.spendDownMonthly * 12)}/yr · {100 - cfg.retireAge} yr runway</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{fmt(calc.spendDownMonthly * 12)}/yr · {105 - cfg.retireAge} yr runway</div>
             </div>
           </div>
           <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: '0.75rem 1rem', fontSize: 12, color: 'var(--text-secondary)' }}>

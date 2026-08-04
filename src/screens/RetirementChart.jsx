@@ -21,7 +21,7 @@ export default function RetirementChart({ cfg, calc }) {
       spendDown.push(age === cfg.retireAge ? val : null);
     }
     let pb = calc.total, sb = calc.total;
-    for (let age = cfg.retireAge + 1; age <= 100; age++) {
+    for (let age = cfg.retireAge + 1; age <= 105; age++) {
       ages.push(age); accum.push(null);
       pb = pb * (1 + r) - calc.annualWithdrawal4; preserve.push(Math.round(Math.max(0, pb)));
       sb = sb * (1 + r) - calc.spendDownMonthly * 12; spendDown.push(Math.round(Math.max(0, sb)));
@@ -42,7 +42,7 @@ export default function RetirementChart({ cfg, calc }) {
         plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => `Age ${i[0].label}`, label: (i) => (i.raw === null ? null : ` ${i.dataset.label}: $${Math.round(i.raw).toLocaleString()}`) } } },
         scales: {
           x: { ticks: { color: '#888780', font: { size: 11 }, maxTicksLimit: 10, callback: (v, i) => (ages[i] % 10 === 0 || ages[i] === cfg.currentAge || ages[i] === cfg.retireAge ? ages[i] : '') }, grid: { color: 'rgba(136,135,128,0.12)' } },
-          y: { ticks: { color: '#888780', font: { size: 11 }, callback: (v) => (v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : v >= 1000 ? '$' + (v / 1000).toFixed(0) + 'k' : '$' + v) }, grid: { color: 'rgba(136,135,128,0.12)' } },
+          y: { min: 0, max: 10000000, ticks: { color: '#888780', font: { size: 11 }, callback: (v) => (v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : v >= 1000 ? '$' + (v / 1000).toFixed(0) + 'k' : '$' + v) }, grid: { color: 'rgba(136,135,128,0.12)' } },
         },
       },
     });
