@@ -2,13 +2,18 @@ import { ArrowUpIcon, ArrowDownIcon, SummaryIcon, TrashIcon } from './icons.jsx'
 import { categoryColor, categoryColorBg } from './categoryColors.js';
 import { fmtCents } from '../utils/format.js';
 
-export default function TxRow({ tx, onDelete }) {
+export default function TxRow({ tx, onDelete, onClick }) {
   const isExpense = tx.type === 'expense';
   const isInvestment = tx.type === 'investment';
 
+  const stopThenDelete = (e) => {
+    e.stopPropagation();
+    onDelete(e);
+  };
+
   if (isInvestment) {
     return (
-      <div className="txrow">
+      <div className={`txrow${onClick ? ' clickable' : ''}`} onClick={onClick}>
         <div className="swatch" style={{ background: 'var(--accent-purple-bg)' }}>
           <SummaryIcon stroke="var(--accent-purple)" />
         </div>
@@ -22,7 +27,7 @@ export default function TxRow({ tx, onDelete }) {
           +{fmtCents(tx.amount)}
         </div>
         {onDelete && (
-          <button className="del" onClick={onDelete} aria-label="Delete entry" type="button">
+          <button className="del" onClick={stopThenDelete} aria-label="Delete entry" type="button">
             <TrashIcon />
           </button>
         )}
@@ -31,7 +36,7 @@ export default function TxRow({ tx, onDelete }) {
   }
 
   return (
-    <div className="txrow">
+    <div className={`txrow${onClick ? ' clickable' : ''}`} onClick={onClick}>
       <div className="swatch" style={{ background: isExpense ? 'var(--accent-expense-bg)' : 'var(--accent-income-bg)' }}>
         {isExpense ? (
           <ArrowUpIcon stroke="var(--accent-expense)" />
@@ -62,7 +67,7 @@ export default function TxRow({ tx, onDelete }) {
         {fmtCents(tx.amount)}
       </div>
       {onDelete && (
-        <button className="del" onClick={onDelete} aria-label="Delete entry" type="button">
+        <button className="del" onClick={stopThenDelete} aria-label="Delete entry" type="button">
           <TrashIcon />
         </button>
       )}

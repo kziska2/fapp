@@ -14,6 +14,7 @@ import {
 import { ArrowUpIcon, ArrowDownIcon } from '../components/icons.jsx';
 import Ring from '../components/Ring.jsx';
 import TxRow from '../components/TxRow.jsx';
+import EditEntryModal from '../components/EditEntryModal.jsx';
 import { fmt, fmtCents, todayStr, currentYearMonth, fmtDayLabel } from '../utils/format.js';
 
 const emptyExpense = () => ({ amount: '', categoryId: '', necessary: 'necessary', date: todayStr(), merchant: '' });
@@ -24,6 +25,7 @@ export default function DailyLog() {
   const [mode, setMode] = useState('expense');
   const [expenseForm, setExpenseForm] = useState(emptyExpense);
   const [paycheckForm, setPaycheckForm] = useState(emptyPaycheck);
+  const [editingTx, setEditingTx] = useState(null);
 
   const categories = useMemo(
     () => listCategories(db).filter((c) => c.type !== 'savings'),
@@ -238,10 +240,12 @@ export default function DailyLog() {
         <div key={date}>
           <div className="daylabel">{fmtDayLabel(date)}</div>
           {txs.map((tx) => (
-            <TxRow key={tx.id} tx={tx} onDelete={() => removeTx(tx.id)} />
+            <TxRow key={tx.id} tx={tx} onDelete={() => removeTx(tx.id)} onClick={() => setEditingTx(tx)} />
           ))}
         </div>
       ))}
+
+      {editingTx && <EditEntryModal tx={editingTx} onClose={() => setEditingTx(null)} />}
     </div>
   );
 }

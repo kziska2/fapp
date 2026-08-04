@@ -8,6 +8,7 @@ import { categoryColor } from '../components/categoryColors.js';
 import Ring from '../components/Ring.jsx';
 import TxRow from '../components/TxRow.jsx';
 import AdvancedSearch from '../components/AdvancedSearch.jsx';
+import EditEntryModal from '../components/EditEntryModal.jsx';
 import { fmt, fmtCents, periodRange, periodLabel, scaleMonthly } from '../utils/format.js';
 
 const SAVINGS_INVESTMENT_TYPES = ['Retirement (401k/IRA)', 'Short-term savings', 'Big-purchase savings'];
@@ -101,6 +102,7 @@ export default function Summary() {
   const { db, notifyChanged, version } = useVault();
   const [period, setPeriod] = useState('month');
   const [offset, setOffset] = useState(0);
+  const [editingTx, setEditingTx] = useState(null);
 
   // Switching Week/Month/Year jumps back to "now" for that granularity —
   // carrying an arbitrary offset across different period types (e.g. "3
@@ -117,14 +119,15 @@ export default function Summary() {
   const investedByType = useMemo(() => investmentTotalsByType(db, range.start, range.end), [db, version, range.start, range.end]);
   const investedAllTimeByType = useMemo(() => investmentTotalsByType(db, ALL_TIME_RANGE.start, ALL_TIME_RANGE.end), [db, version]);
   const record = useMemo(() => {
-    const txs = transactionsForRange(db, range.start, range.end);
+    const txs = transactionsForRange(db, range.start, range.end).map((t) => ({ ...t, _key: `tx-${t.id}` }));
+    // Keep every field from the investments row (not just what TxRow displays) —
+    // editing needs shares/cost_per_share/account_type/note, which the earlier
+    // display-only shape dropped.
     const invests = investmentsForRange(db, range.start, range.end).map((inv) => ({
-      id: `inv-${inv.id}`,
+      ...inv,
+      _key: `inv-${inv.id}`,
       type: 'investment',
-      date: inv.date,
       amount: inv.shares * inv.cost_per_share,
-      ticker: inv.ticker,
-      investment_type: inv.investment_type,
     }));
     return [...txs, ...invests].sort((a, b) => b.date.localeCompare(a.date));
   }, [db, version, range.start, range.end]);
@@ -233,10 +236,12 @@ export default function Summary() {
       {record.length > 0 && (
         <div className="record-list">
           {record.map((tx) => (
-            <TxRow key={tx.id} tx={tx} />
+            <TxRow key={tx._key} tx={tx} onClick={() => setEditingTx(tx)} />
           ))}
         </div>
       )}
+
+      {editingTx && <EditEntryModal tx={editingTx} onClose={() => setEditingTx(null)} />}
     </div>
   );
 }

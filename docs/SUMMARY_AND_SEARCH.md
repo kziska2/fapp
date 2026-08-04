@@ -29,7 +29,8 @@ prices or returns; that's out of scope, and you can check that elsewhere.
 **Activity record** — everything logged for whatever period you're viewing (Week/Month/
 Year, including past or future periods via the ‹ › navigation): expenses, paychecks, and
 investment/retirement contributions together, newest first, in a scrollable list. This is a
-running record of what happened in that period, not just a recent-few snapshot.
+running record of what happened in that period, not just a recent-few snapshot. Tap any
+entry to edit it, the same as on Daily Log or the Investments tab.
 
 **Search bar** — a single box for quick lookups, with an "Advanced" option next to it for
 combining multiple filters at once (both described below).

@@ -59,3 +59,20 @@ export function setIncomeOverride(db, amount) {
     [amount === null ? null : String(amount)]
   );
 }
+
+// The salary-based income calculator's own inputs (annual income, filing status,
+// state, pre-tax deductions) — remembered so they don't need retyping every time,
+// kept separate from income_override (which stores the resulting monthly figure).
+export function getIncomeCalculatorInputs(db) {
+  const row = query(db, "SELECT value FROM app_settings WHERE key = 'income_calculator'")[0];
+  return row && row.value ? JSON.parse(row.value) : null;
+}
+
+export function setIncomeCalculatorInputs(db, inputs) {
+  run(
+    db,
+    `INSERT INTO app_settings (key, value) VALUES ('income_calculator', ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+    [JSON.stringify(inputs)]
+  );
+}

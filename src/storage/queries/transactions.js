@@ -23,6 +23,21 @@ export function addIncome(db, { date, amount, jobName, note }) {
   );
 }
 
+export function updateExpense(db, id, { date, amount, categoryId, necessary, merchantName, note }) {
+  const merchantId = merchantName ? upsertMerchant(db, merchantName, date) : null;
+  run(
+    db,
+    `UPDATE transactions SET date = ?, amount = ?, category_id = ?, merchant_id = ?, necessary = ?, note = ?
+     WHERE id = ?`,
+    [date, amount, categoryId, merchantId, necessary, note || null, id]
+  );
+}
+
+export function updateIncome(db, id, { date, amount, jobName, note }) {
+  const jobId = upsertJob(db, jobName, date);
+  run(db, `UPDATE transactions SET date = ?, amount = ?, job_id = ?, note = ? WHERE id = ?`, [date, amount, jobId, note || null, id]);
+}
+
 export function deleteTransaction(db, id) {
   run(db, 'DELETE FROM transactions WHERE id = ?', [id]);
 }

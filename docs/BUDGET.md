@@ -18,6 +18,26 @@ number you set is higher than that average, you'll see a warning — a nudge tha
 planning against more than you've typically brought in, not a hard limit. A link lets you
 snap back to the real, live figure at any time.
 
+### Calculating monthly income from a salary
+
+If you'd rather work from an annual salary than guess a monthly number, "Calculate from
+annual salary instead" opens a small calculator:
+
+- **Annual gross income** — your salary before anything is taken out.
+- **Filing status** — Single, Married Filing Jointly, Married Filing Separately, or Head
+  of Household.
+- **State** — used to estimate state income tax (nine states have none; you'll see $0).
+- **Pre-tax deductions** *(optional)* — 401(k) contributions, health insurance, and the
+  like, taken out before tax is calculated.
+
+It shows its work — federal income tax, FICA (Social Security + Medicare), and state tax,
+each subtracted step by step down to an estimated monthly take-home — then a button to use
+that number as your monthly income above. This is a **planning estimate**, using the
+standard deduction with no credits, itemization, or local/county taxes — not a substitute
+for your actual paycheck or a tax filing. Your inputs are remembered so you don't have to
+retype them next time; the tax figures themselves are for tax year 2026 (`docs/DATA_MODEL.md`
+has the full sourcing note).
+
 ## Buffer
 
 Shown at both the top and bottom of the screen: **income minus your necessary,

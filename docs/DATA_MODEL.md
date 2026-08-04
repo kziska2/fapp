@@ -22,6 +22,10 @@ Every entry you log — an expense or a bit of income.
 Today's prototype has a single free-text "detail" field per transaction; the merchant
 becomes its own tracked field so totals are reliable (see next section).
 
+Any logged expense or paycheck can be tapped — wherever it's listed (Daily Log's running
+list or Summary's activity record) — to edit any of its fields later, not just delete it.
+Handy for filling in a detail you skipped while logging quickly.
+
 **Savings-type categories never appear here.** Retirement saving, Short term savings, and
 Savings (see Categories below) aren't logged as transactions at all — they're tracked
 through the Investments table instead. See `docs/BUDGET.md` for why.
@@ -131,6 +135,17 @@ Savings, the monthly amount set here *is* the goal — there's no expense entry.
 is calculated from the Investments table instead, matched by investment type (see
 Investments, below, for the mapping).
 
+**Salary-based income calculator.** An alternate way to arrive at the monthly income
+figure above: enter an annual salary, filing status, state, and optional pre-tax
+deductions, and the app estimates federal income tax, FICA, and state tax (tax year 2026
+brackets and standard deductions, sourced from the IRS, SSA, and state tax agencies) down
+to an estimated monthly take-home. This is a planning estimate — standard deduction only,
+no credits or itemization, and FICA is calculated on gross wages before pre-tax
+deductions (correct for a traditional 401(k), which doesn't reduce Social
+Security/Medicare wages). The calculator's own inputs are saved separately from the
+monthly income figure itself, so switching between typing a number directly and
+recalculating from salary doesn't lose either one.
+
 ## Manual income
 
 Income is logged as a transaction (`type = income`) — no separate income table needed;
@@ -177,6 +192,9 @@ without any extra linking field:
 
 Brokerage, HSA, and Other are tracked here but aren't measured against a specific Budget
 savings goal.
+
+Like transactions, any position can be tapped — on the Investments tab or in Summary's
+activity record — to edit any of its fields later.
 
 ## Retirement planning (not stored data, but derived from settings)
 

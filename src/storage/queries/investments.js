@@ -13,6 +13,15 @@ export function addInvestment(db, { date, ticker, shares, costPerShare, accountT
   );
 }
 
+export function updateInvestment(db, id, { date, ticker, shares, costPerShare, accountType, investmentType, note }) {
+  run(
+    db,
+    `UPDATE investments SET date = ?, ticker = ?, shares = ?, cost_per_share = ?, account_type = ?, investment_type = ?, note = ?
+     WHERE id = ?`,
+    [date, ticker, shares, costPerShare, accountType, investmentType, note || null, id]
+  );
+}
+
 export function deleteInvestment(db, id) {
   run(db, 'DELETE FROM investments WHERE id = ?', [id]);
 }

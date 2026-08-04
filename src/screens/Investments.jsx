@@ -4,6 +4,7 @@ import { listInvestments, addInvestment, deleteInvestment, investmentTotalsByTyp
 import { listBudgetLines } from '../storage/queries/budget.js';
 import { TrashIcon } from '../components/icons.jsx';
 import Ring from '../components/Ring.jsx';
+import EditEntryModal from '../components/EditEntryModal.jsx';
 import { fmt, fmtCents, todayStr, periodRange, fmtShortDate } from '../utils/format.js';
 
 const ACCOUNT_TYPES = ['Pre-tax (Traditional)', 'Post-tax (Roth)', 'Taxable'];
@@ -37,6 +38,7 @@ function investTypeColor(type) {
 export default function Investments() {
   const { db, notifyChanged, version } = useVault();
   const [form, setForm] = useState(emptyForm);
+  const [editingTx, setEditingTx] = useState(null);
 
   const positions = useMemo(() => listInvestments(db), [db, version]);
   const budgetLines = useMemo(() => listBudgetLines(db), [db, version]);
@@ -135,7 +137,7 @@ export default function Investments() {
           <div style={{ padding: '10px 9px', fontSize: 13, color: 'var(--text-secondary)' }}>No positions logged yet.</div>
         )}
         {positions.map((p) => (
-          <div className="budgetrow" key={p.id}>
+          <div className="budgetrow clickable" key={p.id} onClick={() => setEditingTx({ ...p, type: 'investment' })}>
             <span className="dot" style={{ background: investTypeColor(p.investment_type) }} />
             <div className="bmid">
               <div className="bname">
@@ -146,12 +148,14 @@ export default function Investments() {
               </div>
             </div>
             <div className="bamt"><span style={{ fontSize: 13, fontWeight: 700 }}>{fmt(p.shares * p.cost_per_share)}</span></div>
-            <button className="del" type="button" onClick={() => remove(p.id)} aria-label={`Remove ${p.ticker}`}>
+            <button className="del" type="button" onClick={(e) => { e.stopPropagation(); remove(p.id); }} aria-label={`Remove ${p.ticker}`}>
               <TrashIcon />
             </button>
           </div>
         ))}
       </div>
+
+      {editingTx && <EditEntryModal tx={editingTx} onClose={() => setEditingTx(null)} />}
     </div>
   );
 }

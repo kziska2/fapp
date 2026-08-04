@@ -10,11 +10,112 @@ import {
   deleteExceptionalPeriod,
   getIncomeOverride,
   setIncomeOverride,
+  getIncomeCalculatorInputs,
+  setIncomeCalculatorInputs,
 } from '../storage/queries/budget.js';
 import { monthTotals } from '../storage/queries/transactions.js';
 import { categoryColor } from '../components/categoryColors.js';
 import { TrashIcon, PencilIcon } from '../components/icons.jsx';
+import { calculateIncomeBreakdown, FILING_STATUSES, STATE_OPTIONS } from '../utils/tax.js';
 import { fmt, currentYearMonth, fmtShortDate, previousYearMonths } from '../utils/format.js';
+
+const emptyCalcInputs = () => ({ annualIncome: '', filingStatus: 'single', stateCode: 'CA', preTaxDeductions: '' });
+
+function SalaryCalculator({ db, notifyChanged, onApply }) {
+  const [open, setOpen] = useState(false);
+  const [inputs, setInputs] = useState(() => getIncomeCalculatorInputs(db) || emptyCalcInputs());
+
+  const set = (key, value) => {
+    const next = { ...inputs, [key]: value };
+    setInputs(next);
+    setIncomeCalculatorInputs(db, next);
+    notifyChanged();
+  };
+
+  const breakdown = useMemo(() => {
+    if (!inputs.annualIncome) return null;
+    return calculateIncomeBreakdown({
+      annualIncome: Number(inputs.annualIncome) || 0,
+      filingStatus: inputs.filingStatus,
+      stateCode: inputs.stateCode,
+      preTaxDeductions: Number(inputs.preTaxDeductions) || 0,
+    });
+  }, [inputs]);
+
+  const stateName = STATE_OPTIONS.find((s) => s.code === inputs.stateCode)?.name || inputs.stateCode;
+
+  return (
+    <div style={{ marginTop: 8 }}>
+      <button type="button" className="reset-link" onClick={() => setOpen((o) => !o)}>
+        {open ? 'Hide salary calculator' : 'Calculate from annual salary instead'}
+      </button>
+      {open && (
+        <div className="calc-panel">
+          <div className="grid2" style={{ marginBottom: 8 }}>
+            <div className="field">
+              <label>Annual gross income</label>
+              <input type="number" placeholder="0" value={inputs.annualIncome} onChange={(e) => set('annualIncome', e.target.value)} />
+            </div>
+            <div className="field">
+              <label>Filing status</label>
+              <select value={inputs.filingStatus} onChange={(e) => set('filingStatus', e.target.value)}>
+                {FILING_STATUSES.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid2" style={{ marginBottom: 8 }}>
+            <div className="field">
+              <label>State</label>
+              <select value={inputs.stateCode} onChange={(e) => set('stateCode', e.target.value)}>
+                {STATE_OPTIONS.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label>Pre-tax deductions <span style={{ fontWeight: 400, color: 'var(--text-tertiary)' }}>(401k, insurance)</span></label>
+              <input type="number" placeholder="0" value={inputs.preTaxDeductions} onChange={(e) => set('preTaxDeductions', e.target.value)} />
+            </div>
+          </div>
+
+          {breakdown && (
+            <>
+              <div className="calc-math">
+                <div className="calc-row"><span>Annual gross income</span><span>{fmt(breakdown.grossAnnual)}</span></div>
+                {breakdown.preTaxDeductions > 0 && (
+                  <div className="calc-row"><span>− Pre-tax deductions</span><span>-{fmt(breakdown.preTaxDeductions)}</span></div>
+                )}
+                <div className="calc-row calc-sub"><span>Federal standard deduction</span><span>-{fmt(breakdown.federalStdDeduction)}</span></div>
+                <div className="calc-row calc-sub"><span>Federal taxable income</span><span>{fmt(breakdown.taxableIncomeFederal)}</span></div>
+                <div className="calc-row"><span>− Federal income tax (est.)</span><span>-{fmt(breakdown.federalTax)}</span></div>
+                <div className="calc-row calc-sub"><span>Social Security</span><span>-{fmt(breakdown.socialSecurityTax)}</span></div>
+                <div className="calc-row calc-sub">
+                  <span>Medicare{breakdown.additionalMedicareTax > 0 ? ' + additional Medicare' : ''}</span>
+                  <span>-{fmt(breakdown.medicareTax + breakdown.additionalMedicareTax)}</span>
+                </div>
+                <div className="calc-row"><span>− FICA (payroll tax)</span><span>-{fmt(breakdown.ficaTax)}</span></div>
+                <div className="calc-row"><span>− {stateName} state tax (est.)</span><span>-{fmt(breakdown.stateTax)}</span></div>
+                <div className="calc-row calc-total"><span>Estimated annual take-home</span><span>{fmt(breakdown.annualTakeHome)}</span></div>
+                <div className="calc-row calc-total"><span>÷ 12 → Estimated monthly income</span><span>{fmt(breakdown.monthlyTakeHome)}</span></div>
+              </div>
+              <p style={{ fontSize: 9.5, color: 'var(--text-tertiary)', margin: '6px 2px 8px', lineHeight: 1.4 }}>
+                A 2026 tax-year estimate using the standard deduction — no credits, itemization, or local/county
+                taxes. FICA is calculated on gross wages before pre-tax deductions, matching how a traditional
+                401(k) actually works.
+              </p>
+              <button
+                type="button"
+                className="addbtn"
+                style={{ background: 'var(--accent-necessary)', color: 'var(--accent-necessary-bg)' }}
+                onClick={() => onApply(breakdown.monthlyTakeHome)}
+              >
+                Use {fmt(breakdown.monthlyTakeHome)} as my monthly income
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const SECTION_META = {
   necessary: { title: 'Necessary', color: 'var(--accent-necessary)', bg: 'var(--accent-necessary-bg)' },
@@ -158,6 +259,11 @@ export default function Budget() {
     notifyChanged({ immediate: true });
   };
 
+  const applyCalculatedIncome = (monthly) => {
+    setIncomeOverride(db, Math.round(monthly));
+    notifyChanged({ immediate: true });
+  };
+
   const openAddPeriod = () => {
     setEditingPeriod(null);
     setPeriodDraft({ startDate: '', endDate: '', name: '', amount: '' });
@@ -212,6 +318,7 @@ export default function Budget() {
         {overAverage && (
           <div className="buf-warn">⚠ That's {fmt(income - avgIncome3mo)} more than your average income over the last 3 months.</div>
         )}
+        <SalaryCalculator db={db} notifyChanged={notifyChanged} onApply={applyCalculatedIncome} />
       </div>
 
       <CategorySection type="necessary" lines={necLines} onAmountChange={handleAmountChange} onDelete={handleDelete} onAdd={handleAdd('necessary')} />

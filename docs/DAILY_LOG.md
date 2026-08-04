@@ -47,8 +47,10 @@ or projected income.
 The dominant element on the screen — your past entries, newest first, grouped by day.
 Each row shows the category (and detail, if you added one), the necessary/discretionary
 chip in that category's color, and the amount. Expenses and paychecks appear in the same
-list, income shown as a positive amount, expenses as negative. Swipe or tap to delete an
-entry inline.
+list, income shown as a positive amount, expenses as negative. Tap the trash icon to
+delete an entry, or tap anywhere else on the row to open it for editing — every field you
+filled in when you logged it can be changed later, which is handy for adding a detail you
+skipped in the moment.
 
 ## Spending snapshot
 
