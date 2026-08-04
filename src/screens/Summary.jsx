@@ -7,7 +7,7 @@ import { searchIndex, vendorDetail, categoryDetail, noteDetail } from '../storag
 import { categoryColor } from '../components/categoryColors.js';
 import Ring from '../components/Ring.jsx';
 import TxRow from '../components/TxRow.jsx';
-import { fmt, fmtCents, periodRange, scaleMonthly } from '../utils/format.js';
+import { fmt, fmtCents, periodRange, periodLabel, scaleMonthly } from '../utils/format.js';
 
 const SAVINGS_INVESTMENT_TYPES = ['Retirement (401k/IRA)', 'Short-term savings', 'Big-purchase savings'];
 const ALL_TIME_RANGE = { start: '0000-01-01', end: '9999-12-31' };
@@ -90,9 +90,17 @@ function SearchBox({ db }) {
 export default function Summary() {
   const { db, notifyChanged, version } = useVault();
   const [period, setPeriod] = useState('month');
+  const [offset, setOffset] = useState(0);
+
+  // Switching Week/Month/Year jumps back to "now" for that granularity —
+  // carrying an arbitrary offset across different period types (e.g. "3
+  // months back" staying applied after switching to Week) would be confusing.
+  const changePeriod = (p) => { setPeriod(p); setOffset(0); };
 
   const budgetLines = useMemo(() => listBudgetLines(db), [db, version]);
-  const range = periodRange(period);
+  const range = periodRange(period, offset);
+  const isCurrent = offset === 0;
+  const periodPhrase = isCurrent ? `this ${period}` : periodLabel(period, offset);
 
   const spendByCat = useMemo(() => spendByCategoryForRange(db, range.start, range.end), [db, version, range.start, range.end]);
   const earned = useMemo(() => incomeForRange(db, range.start, range.end), [db, version, range.start, range.end]);
@@ -123,13 +131,21 @@ export default function Summary() {
 
       <div className="foldertabs" style={{ marginTop: 10 }}>
         {['week', 'month', 'year'].map((p) => (
-          <button key={p} className={`foldertab ${period === p ? 'active' : ''}`} type="button" onClick={() => setPeriod(p)}>
+          <button key={p} className={`foldertab ${period === p ? 'active' : ''}`} type="button" onClick={() => changePeriod(p)}>
             {p[0].toUpperCase() + p.slice(1)}
           </button>
         ))}
       </div>
       <div className="folderbody">
-        <div className="section-title" style={{ marginTop: 0 }}>Budget — this {period}</div>
+        <div className="period-nav">
+          <button type="button" className="period-nav-btn" onClick={() => setOffset((o) => o - 1)} aria-label={`Previous ${period}`}>‹</button>
+          <span className="period-nav-label">{isCurrent ? `This ${period}` : periodLabel(period, offset)}</span>
+          <button type="button" className="period-nav-btn" onClick={() => setOffset((o) => o + 1)} aria-label={`Next ${period}`}>›</button>
+        </div>
+        {!isCurrent && (
+          <button type="button" className="period-nav-today" onClick={() => setOffset(0)}>Back to today</button>
+        )}
+        <div className="section-title" style={{ marginTop: 0 }}>Budget — {periodPhrase}</div>
         <div className="ring-center">
           <Ring pct={pct} ringColor={over ? 'var(--accent-expense)' : 'var(--accent-necessary)'} value={fmt(totalSpent)} sub={`of ${fmt(totalBudget)}`} />
           <div className="statline">
@@ -173,14 +189,14 @@ export default function Summary() {
 
         <div className="goal-pair">
           <div className="goal-cell">
-            <div className="section-title">Earned this {period}</div>
+            <div className="section-title">Earned {periodPhrase}</div>
             <div className="plain-stat">
               <div className="pv">{fmt(earned)}</div>
               <div className="pl">real, logged income</div>
             </div>
           </div>
           <div className="goal-cell">
-            <div className="section-title">Invested this {period}</div>
+            <div className="section-title">Invested {periodPhrase}</div>
             <Ring pct={investedPct} ringColor="var(--accent-purple)" value={fmt(invested)} sub={`of ${fmt(savingsGoal)}`} />
             <div className="goal-pct">{savingsGoal > 0 ? Math.round(investedPct) : 0}% to goal</div>
           </div>

@@ -27,21 +27,40 @@ export function fmtShortDate(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export function periodRange(period) {
+// `offset` shifts the range by whole periods — -1 is the previous week/month/
+// year, +1 the next — so Summary can page back through history or ahead into
+// a future month, not just show "now."
+export function periodRange(period, offset = 0) {
   const now = new Date();
   const pad = (n) => String(n).padStart(2, '0');
   const toStr = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   if (period === 'week') {
-    const start = new Date(now);
+    const end = new Date(now);
+    end.setDate(end.getDate() + offset * 7);
+    const start = new Date(end);
     start.setDate(start.getDate() - 6);
-    return { start: toStr(start), end: toStr(now) };
+    return { start: toStr(start), end: toStr(end) };
   }
   if (period === 'year') {
-    return { start: `${now.getFullYear()}-01-01`, end: `${now.getFullYear()}-12-31` };
+    const year = now.getFullYear() + offset;
+    return { start: `${year}-01-01`, end: `${year}-12-31` };
   }
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const start = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0);
   return { start: toStr(start), end: toStr(end) };
+}
+
+// A short human label for the currently selected span, e.g. "Jul 2026",
+// "2025", or "Jul 28 – Aug 3" — used when offset !== 0 so the header doesn't
+// keep saying "this month" while showing a different one.
+export function periodLabel(period, offset) {
+  const { start, end } = periodRange(period, offset);
+  if (period === 'year') return start.slice(0, 4);
+  if (period === 'month') {
+    const d = new Date(start + 'T12:00:00');
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  return `${fmtShortDate(start)} – ${fmtShortDate(end)}`;
 }
 
 export function scaleMonthly(monthlyAmount, period) {
