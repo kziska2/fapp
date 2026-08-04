@@ -327,6 +327,7 @@ button, input, select { font-family: inherit; }
 .goalbox .gamt { display: flex; align-items: baseline; gap: 3px; margin-top: 5px; }
 .goalbox .gamt .cur { font-size: 15px; font-weight: 700; color: var(--text-tertiary); }
 .goalbox .gamt input { width: 100%; font-size: 18px; font-weight: 700; border: none; background: none; color: var(--text-primary); font-family: inherit; padding: 0; }
+.reset-link { border: none; background: none; color: var(--accent-necessary); font-size: 10px; font-weight: 650; cursor: pointer; text-decoration: underline; padding: 0; font-family: inherit; }
 .goalbox .gamt input:focus { outline: none; }
 
 .bgroup-title { font-size: 10.5px; font-weight: 750; text-transform: uppercase; letter-spacing: 0.04em; margin: 12px 2px 4px; display: flex; align-items: center; justify-content: space-between; }

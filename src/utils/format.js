@@ -63,6 +63,19 @@ export function periodLabel(period, offset) {
   return `${fmtShortDate(start)} – ${fmtShortDate(end)}`;
 }
 
+// The `n` calendar months strictly before the current one, oldest first — used
+// to average income over a trailing window that excludes the current
+// (possibly still-partial) month.
+export function previousYearMonths(n) {
+  const now = new Date();
+  const months = [];
+  for (let i = n; i >= 1; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+  }
+  return months;
+}
+
 export function scaleMonthly(monthlyAmount, period) {
   if (period === 'week') return monthlyAmount / 4.3;
   if (period === 'year') return monthlyAmount * 12;

@@ -7,9 +7,16 @@ entered here. Nothing on this tab tracks spending directly; it's the plan, not t
 ## Monthly income
 
 Starts from **real income** — the total of the paychecks you've actually logged on Daily
-Log this month. That real figure is always shown for reference. You can edit the number
-down if you want to budget conservatively (e.g. pretending you have less than you do), but
-never up — you can't budget against money you haven't actually earned.
+Log this month so far. But if your paychecks don't land evenly through the month (say,
+nothing at the start and a chunk on the last day), that running total can be a misleading
+number to plan against early on — so you can set your own budget number instead, in either
+direction.
+
+To keep that freedom from being a blind spot, this tab also shows your **average income
+over the previous 3 months** (not counting the current, still-in-progress one). If the
+number you set is higher than that average, you'll see a warning — a nudge that you're
+planning against more than you've typically brought in, not a hard limit. A link lets you
+snap back to the real, live figure at any time.
 
 ## Buffer
 

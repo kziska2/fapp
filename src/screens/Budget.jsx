@@ -14,7 +14,7 @@ import {
 import { monthTotals } from '../storage/queries/transactions.js';
 import { categoryColor } from '../components/categoryColors.js';
 import { TrashIcon, PencilIcon } from '../components/icons.jsx';
-import { fmt, currentYearMonth, fmtShortDate } from '../utils/format.js';
+import { fmt, currentYearMonth, fmtShortDate, previousYearMonths } from '../utils/format.js';
 
 const SECTION_META = {
   necessary: { title: 'Necessary', color: 'var(--accent-necessary)', bg: 'var(--accent-necessary-bg)' },
@@ -110,7 +110,18 @@ export default function Budget() {
   const periods = useMemo(() => listExceptionalPeriods(db), [db, version]);
   const realIncome = useMemo(() => monthTotals(db, currentYearMonth()).income, [db, version]);
   const rawOverride = useMemo(() => getIncomeOverride(db), [db, version]);
-  const income = rawOverride !== null ? Math.min(rawOverride, realIncome) : realIncome;
+  const income = rawOverride !== null ? rawOverride : realIncome;
+
+  // Paychecks don't necessarily land evenly through the month, so "real income
+  // logged so far this month" can be misleadingly low early on. Rather than
+  // capping the budget number to that partial figure, we let it be set freely
+  // and warn against the trailing 3-month average instead (docs/BUDGET.md).
+  const avgIncome3mo = useMemo(() => {
+    const months = previousYearMonths(3);
+    const total = months.reduce((s, ym) => s + monthTotals(db, ym).income, 0);
+    return total / months.length;
+  }, [db, version]);
+  const overAverage = avgIncome3mo > 0 && income > avgIncome3mo;
 
   const necLines = budgetLines.filter((l) => l.type === 'necessary');
   const discLines = budgetLines.filter((l) => l.type === 'discretionary');
@@ -138,9 +149,13 @@ export default function Budget() {
   };
 
   const onIncomeInput = (raw) => {
-    const v = Math.min(Number(raw) || 0, realIncome);
-    setIncomeOverride(db, v);
+    setIncomeOverride(db, Number(raw) || 0);
     notifyChanged();
+  };
+
+  const resetIncome = () => {
+    setIncomeOverride(db, null);
+    notifyChanged({ immediate: true });
   };
 
   const openAddPeriod = () => {
@@ -183,15 +198,20 @@ export default function Budget() {
       <div className="goalbox">
         <div className="glabel">Monthly income</div>
         <div className="ghint" style={{ marginTop: 0 }}>
-          Real income this month, from paychecks logged on Daily Log: <b style={{ color: 'var(--text-primary)' }}>{fmt(realIncome)}</b>
+          Real income logged this month so far: <b style={{ color: 'var(--text-primary)' }}>{fmt(realIncome)}</b>
+          {' · '}Average of the last 3 months: <b style={{ color: 'var(--text-primary)' }}>{fmt(avgIncome3mo)}</b>
         </div>
         <div className="gamt">
           <span className="cur">$</span>
           <input type="number" value={income || ''} onChange={(e) => onIncomeInput(e.target.value)} />
         </div>
         <div className="ghint">
-          This is what your budget plans against. You can enter a lower number to budget conservatively, but not more than what you've actually earned.
+          Set this to whatever you want to budget against — handy since paychecks don't land evenly through the
+          month.{rawOverride !== null && <> <button type="button" className="reset-link" onClick={resetIncome}>Use real income instead</button></>}
         </div>
+        {overAverage && (
+          <div className="buf-warn">⚠ That's {fmt(income - avgIncome3mo)} more than your average income over the last 3 months.</div>
+        )}
       </div>
 
       <CategorySection type="necessary" lines={necLines} onAmountChange={handleAmountChange} onDelete={handleDelete} onAdd={handleAdd('necessary')} />
