@@ -30,6 +30,11 @@ export function investmentTotalsByType(db, startDate, endDate) {
   return map;
 }
 
+// Summary's activity-record list — every contribution in the selected period.
+export function investmentsForRange(db, startDate, endDate) {
+  return query(db, 'SELECT * FROM investments WHERE date >= ? AND date <= ? ORDER BY date DESC, id DESC', [startDate, endDate]);
+}
+
 export function investmentAllTimeTotal(db) {
   return query(db, 'SELECT COALESCE(SUM(shares * cost_per_share), 0) AS total FROM investments')[0].total;
 }

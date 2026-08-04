@@ -26,10 +26,10 @@ contributions against the **combined total of your three savings-category budget
 running total of money in (cost basis), not current market value — the app doesn't track
 prices or returns; that's out of scope, and you can check that elsewhere.
 
-**Purchase record** — every expense you've logged for whatever period you're viewing
-(Week/Month/Year, including past or future periods via the ‹ › navigation), newest first,
-in a scrollable list. This is a running record of what happened in that period, not just a
-recent-few snapshot.
+**Activity record** — everything logged for whatever period you're viewing (Week/Month/
+Year, including past or future periods via the ‹ › navigation): expenses, paychecks, and
+investment/retirement contributions together, newest first, in a scrollable list. This is a
+running record of what happened in that period, not just a recent-few snapshot.
 
 **Search bar** — a single box for quick lookups, with an "Advanced" option next to it for
 combining multiple filters at once (both described below).

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useVault } from '../storage/VaultContext.jsx';
 import { listBudgetLines } from '../storage/queries/budget.js';
-import { spendByCategoryForRange, incomeForRange, expensesForRange } from '../storage/queries/transactions.js';
-import { investmentTotalsByType } from '../storage/queries/investments.js';
+import { spendByCategoryForRange, incomeForRange, transactionsForRange } from '../storage/queries/transactions.js';
+import { investmentTotalsByType, investmentsForRange } from '../storage/queries/investments.js';
 import { searchIndex, vendorDetail, categoryDetail, noteDetail } from '../storage/queries/search.js';
 import { categoryColor } from '../components/categoryColors.js';
 import Ring from '../components/Ring.jsx';
@@ -106,7 +106,18 @@ export default function Summary() {
   const earned = useMemo(() => incomeForRange(db, range.start, range.end), [db, version, range.start, range.end]);
   const investedByType = useMemo(() => investmentTotalsByType(db, range.start, range.end), [db, version, range.start, range.end]);
   const investedAllTimeByType = useMemo(() => investmentTotalsByType(db, ALL_TIME_RANGE.start, ALL_TIME_RANGE.end), [db, version]);
-  const record = useMemo(() => expensesForRange(db, range.start, range.end), [db, version, range.start, range.end]);
+  const record = useMemo(() => {
+    const txs = transactionsForRange(db, range.start, range.end);
+    const invests = investmentsForRange(db, range.start, range.end).map((inv) => ({
+      id: `inv-${inv.id}`,
+      type: 'investment',
+      date: inv.date,
+      amount: inv.shares * inv.cost_per_share,
+      ticker: inv.ticker,
+      investment_type: inv.investment_type,
+    }));
+    return [...txs, ...invests].sort((a, b) => b.date.localeCompare(a.date));
+  }, [db, version, range.start, range.end]);
 
   const spendableLines = budgetLines.filter((l) => l.type !== 'savings');
   const totalBudget = scaleMonthly(spendableLines.reduce((s, l) => s + l.amount_monthly, 0), period);
@@ -206,8 +217,8 @@ export default function Summary() {
         </div>
       </div>
 
-      <div className="section-title" style={{ marginTop: 12 }}>Purchase record — {periodPhrase}</div>
-      {record.length === 0 && <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No purchases logged for this period.</p>}
+      <div className="section-title" style={{ marginTop: 12 }}>Activity record — {periodPhrase}</div>
+      {record.length === 0 && <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No activity logged for this period.</p>}
       {record.length > 0 && (
         <div className="record-list">
           {record.map((tx) => (

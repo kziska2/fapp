@@ -1,9 +1,35 @@
-import { ArrowUpIcon, ArrowDownIcon, TrashIcon } from './icons.jsx';
+import { ArrowUpIcon, ArrowDownIcon, SummaryIcon, TrashIcon } from './icons.jsx';
 import { categoryColor, categoryColorBg } from './categoryColors.js';
 import { fmtCents } from '../utils/format.js';
 
 export default function TxRow({ tx, onDelete }) {
   const isExpense = tx.type === 'expense';
+  const isInvestment = tx.type === 'investment';
+
+  if (isInvestment) {
+    return (
+      <div className="txrow">
+        <div className="swatch" style={{ background: 'var(--accent-purple-bg)' }}>
+          <SummaryIcon stroke="var(--accent-purple)" />
+        </div>
+        <div className="mid">
+          <div className="cat">
+            {tx.ticker}
+            <span className="detail"> · {tx.investment_type}</span>
+          </div>
+        </div>
+        <div className="amt" style={{ color: 'var(--accent-purple)' }}>
+          +{fmtCents(tx.amount)}
+        </div>
+        {onDelete && (
+          <button className="del" onClick={onDelete} aria-label="Delete entry" type="button">
+            <TrashIcon />
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="txrow">
       <div className="swatch" style={{ background: isExpense ? 'var(--accent-expense-bg)' : 'var(--accent-income-bg)' }}>
