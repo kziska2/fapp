@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useVault } from '../storage/VaultContext.jsx';
 import { listBudgetLines } from '../storage/queries/budget.js';
-import { spendByCategoryForRange, incomeForRange, recentExpenses } from '../storage/queries/transactions.js';
+import { spendByCategoryForRange, incomeForRange, expensesForRange } from '../storage/queries/transactions.js';
 import { investmentTotalsByType } from '../storage/queries/investments.js';
 import { searchIndex, vendorDetail, categoryDetail, noteDetail } from '../storage/queries/search.js';
 import { categoryColor } from '../components/categoryColors.js';
@@ -106,7 +106,7 @@ export default function Summary() {
   const earned = useMemo(() => incomeForRange(db, range.start, range.end), [db, version, range.start, range.end]);
   const investedByType = useMemo(() => investmentTotalsByType(db, range.start, range.end), [db, version, range.start, range.end]);
   const investedAllTimeByType = useMemo(() => investmentTotalsByType(db, ALL_TIME_RANGE.start, ALL_TIME_RANGE.end), [db, version]);
-  const recent = useMemo(() => recentExpenses(db, 3), [db, version]);
+  const record = useMemo(() => expensesForRange(db, range.start, range.end), [db, version, range.start, range.end]);
 
   const spendableLines = budgetLines.filter((l) => l.type !== 'savings');
   const totalBudget = scaleMonthly(spendableLines.reduce((s, l) => s + l.amount_monthly, 0), period);
@@ -206,11 +206,15 @@ export default function Summary() {
         </div>
       </div>
 
-      <div className="section-title" style={{ marginTop: 12 }}>Last three purchases</div>
-      {recent.length === 0 && <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No purchases logged yet.</p>}
-      {recent.map((tx) => (
-        <TxRow key={tx.id} tx={tx} />
-      ))}
+      <div className="section-title" style={{ marginTop: 12 }}>Purchase record — {periodPhrase}</div>
+      {record.length === 0 && <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No purchases logged for this period.</p>}
+      {record.length > 0 && (
+        <div className="record-list">
+          {record.map((tx) => (
+            <TxRow key={tx.id} tx={tx} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

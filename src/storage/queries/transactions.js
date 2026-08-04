@@ -78,16 +78,17 @@ export function incomeForRange(db, startDate, endDate) {
   )[0].total;
 }
 
-export function recentExpenses(db, limit = 3) {
+// Summary's purchase-record list — every expense in the selected period
+// (whatever week/month/year the period nav is on), newest first.
+export function expensesForRange(db, startDate, endDate) {
   return query(
     db,
-    `SELECT t.*, c.label AS category_label, m.name AS merchant_name
+    `SELECT t.*, c.label AS category_label, c.type AS category_type, m.name AS merchant_name
      FROM transactions t
      LEFT JOIN categories c ON c.id = t.category_id
      LEFT JOIN merchants m ON m.id = t.merchant_id
-     WHERE t.type = 'expense'
-     ORDER BY t.date DESC, t.id DESC
-     LIMIT ?`,
-    [limit]
+     WHERE t.type = 'expense' AND t.date >= ? AND t.date <= ?
+     ORDER BY t.date DESC, t.id DESC`,
+    [startDate, endDate]
   );
 }
