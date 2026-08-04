@@ -6,23 +6,22 @@ entered here. Nothing on this tab tracks spending directly; it's the plan, not t
 
 ## Monthly income
 
-A **planning estimate** — a number you type in to size your budget against (e.g. "I plan
-around $4,500 a month"). It's kept separate from paycheck logging on Daily Log and is
-never shown anywhere as "earned" — it exists only to help divide your budget across
-categories.
+Starts from **real income** — the total of the paychecks you've actually logged on Daily
+Log this month. That real figure is always shown for reference. You can edit the number
+down if you want to budget conservatively (e.g. pretending you have less than you do), but
+never up — you can't budget against money you haven't actually earned.
 
-Once you've logged a full month of real paychecks, the app can **suggest switching** this
-figure to a calculated one (an average of your recent real paychecks). That's a suggestion
-you choose to accept, not something that happens automatically — you can keep typing your
-own estimate indefinitely if you'd rather.
+## Buffer
 
-## Earnings goal
+Shown at both the top and bottom of the screen: **income minus your necessary,
+discretionary, and savings budgets combined.** This is what's left over once everything
+else is accounted for. If it drops under $100, you'll see a warning — that's meant as an
+early nudge that your budget is cutting it close against what you actually bring in, not a
+hard limit.
 
-A separate figure from the income estimate above — this one is meant to be **ambitious**.
-It's what your actual earned-to-date (from real logged paychecks) is compared against on
-the Summary tab's earnings ring. Where the income estimate is practical ("this is roughly
-what I bring in, so I can plan a budget"), the earnings goal is aspirational ("this is
-what I'm reaching for") — it can be higher than the income estimate, and often should be.
+There's no separate "earnings goal" — income and Buffer are the only figures this tab
+deals with. (Summary's "Earned" stat is just your running real income total for the
+period — it isn't compared against anything set here.)
 
 ## Categories
 
@@ -33,8 +32,8 @@ Every category has a **type**, which decides how it behaves elsewhere in the app
 - **Savings** — money set aside, not spent. Tracked through the Investments tab instead
   of Daily Log (see below).
 
-The app starts you off with a preset list — add your own, rename or retype any of them,
-or remove ones you don't need:
+The app starts you off with a preset list — add your own, rename or retype any of them, or
+**delete any category, preset or custom**, right from its row on this tab:
 
 | Category | Type | Covers |
 |---|---|---|
@@ -93,3 +92,9 @@ vacation, you can set a **custom budget for a specific date range** — pick a s
 date (it doesn't have to line up with a calendar week) and enter one total budget for that
 whole span. While that range is active, it replaces the derived weekly figure; before and
 after, your budget goes back to the normal monthly-derived amount.
+
+You can have **more than one exceptional period** at a time, and **edit or delete** any of
+them later. Each one shows an informational total in the Buffer box (top and bottom of the
+screen) alongside income/necessary/discretionary/savings — that figure is shown for
+visibility only and isn't netted into the Buffer math itself, since whether a trip budget
+replaces or adds to that week's regular category spending is a call you make case by case.

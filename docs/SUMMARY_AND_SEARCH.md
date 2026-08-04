@@ -14,10 +14,10 @@ Four things you see the moment you open the tab, plus the search bar:
 shown as both a dollar amount and a percent (actual spending this month vs. the sum of
 your budget lines).
 
-**Earned, against an ambitious goal** — your total real, logged income so far this period,
-shown as a ring against the **earnings goal** you set on the Budget tab (`docs/BUDGET.md`).
-This is deliberately not a comparison to last year or to any "expected" figure — it's your
-own target, meant to be ambitious. Week/Month/Year switches which period the ring covers.
+**Earned** — a plain running total of your real, logged income so far this period. It's
+not compared against a goal or a prior period — just the number itself, decoupled from the
+Budget tab entirely (the Budget tab's income field is a separate, editable-downward-only
+planning figure — see `docs/BUDGET.md`). Week/Month/Year switches which period it covers.
 
 **Invested, against your savings goals** — a ring showing this period's total Investments
 contributions against the **combined total of your three savings-category budgets**
@@ -59,6 +59,8 @@ What you see next depends on what you picked:
   term, plus the total spent across them.
 
 ## Advanced search (combine filters)
+
+*Not built yet — the app currently ships simple search only; this is Roadmap step 3.*
 
 For when one word isn't enough — e.g. "Chipotle, but only the $50–80 purchases." Advanced
 search lets you set several filters at once and only matches entries that satisfy all of
