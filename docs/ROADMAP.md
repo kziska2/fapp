@@ -13,13 +13,17 @@ All six tabs work:
 - **Daily log** — expense/paycheck entry, spending ring, monthly log
 - **Budget** — real-income-based budgeting, Buffer, necessary/discretionary/savings
   category lists (add/edit/delete), exceptional-period budgets (add/edit/delete)
-- **Summary** — week/month/year stats, category rings, Earned/Invested, simple search
+- **Summary** — week/month/year stats with prev/next navigation, category rings,
+  Earned/Invested, a full activity record (expenses, income, and investment
+  contributions) for the selected period, simple search, and advanced search with saved
+  searches
 - **Investments** — position ledger, savings-goal progress rings
 - **Retirement** — calculator with a Chart.js trajectory visualization
 - **Categories** (settings) — add/rename/retype/remove categories, three-way typed
 
 What's still missing: Google Drive as the permanent home (data currently only lives on
-this device), advanced/saved search, on-demand spreadsheet export, and the debt section.
+this device), merchant-field autocomplete beyond a plain `<datalist>`, on-demand
+spreadsheet export, and the debt section.
 
 ## Build order
 
@@ -33,10 +37,10 @@ this device), advanced/saved search, on-demand spreadsheet export, and the debt 
    sign in → enter passphrase → continue where you left off. Manual locked backup/export
    as a secondary safety net.
 
-3. **Tidy merchant names + search.** Simple search (vendor/category/note-text lookup) is
-   **done**. Still to build: merchant-field autocomplete beyond a plain `<datalist>`,
-   advanced search (combine date, amount, category, type, merchant, and note filters), and
-   saved searches. Full spec: `docs/SUMMARY_AND_SEARCH.md`.
+3. **Tidy merchant names + search.** Simple search (vendor/category/type/note-text lookup)
+   and advanced search (combine date, amount, category, type, merchant, and note filters,
+   plus saved searches) are **done**. Still to build: merchant-field autocomplete beyond a
+   plain `<datalist>`. Full spec: `docs/SUMMARY_AND_SEARCH.md`.
 
 4. ~~**Daily log, budget, & richer summaries.**~~ **Done** — real implementations of the
    Daily Log and Budget tabs (per-category monthly budgets across

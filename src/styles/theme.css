@@ -312,6 +312,13 @@ button, input, select { font-family: inherit; }
 .kind-vendor { background: var(--accent-necessary-bg); color: var(--accent-necessary); }
 .kind-category { background: var(--accent-discretionary-bg); color: var(--accent-discretionary); }
 .kind-note { background: var(--accent-purple-bg); color: var(--accent-purple); }
+.kind-type { background: var(--accent-expense-bg); color: var(--accent-expense); }
+
+.advanced-search { margin-top: 8px; }
+.advanced-panel { background: var(--bg-secondary); border: 1px solid var(--border-tertiary); border-radius: 10px; padding: 10px 11px; margin-top: 6px; }
+.save-search-row { display: flex; gap: 8px; margin-top: 10px; }
+.save-search-row input { flex: 1; font-size: 13px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-secondary); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
+.period-card .saved-name { font-size: 12.5px; font-weight: 650; flex: 1; }
 
 .result-card { background: var(--bg-secondary); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0 0; }
 .result-card .rtitle { font-size: 13px; font-weight: 650; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }

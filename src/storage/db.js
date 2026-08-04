@@ -74,7 +74,27 @@ CREATE TABLE app_settings (
   key TEXT PRIMARY KEY,
   value TEXT
 );
+
+CREATE TABLE saved_searches (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  filters TEXT NOT NULL
+);
 `;
+
+// Vaults created before a table existed have that table missing from their
+// serialized bytes — sql.js loads exactly what was saved, no migration on its
+// own. IF NOT EXISTS backfills new tables into already-encrypted vaults
+// without touching anything that's already there.
+function migrate(db) {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS saved_searches (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL,
+      filters TEXT NOT NULL
+    );
+  `);
+}
 
 // Matches the preset list in docs/DATA_MODEL.md.
 const DEFAULT_CATEGORIES = [
@@ -110,7 +130,9 @@ export async function createDatabase() {
 
 export async function openDatabase(bytes) {
   const sql = await loadSql();
-  return new sql.Database(bytes);
+  const db = new sql.Database(bytes);
+  migrate(db);
+  return db;
 }
 
 export function exportDatabase(db) {

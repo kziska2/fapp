@@ -62,8 +62,6 @@ What you see next depends on what you picked:
 
 ## Advanced search (combine filters)
 
-*Not built yet — the app currently ships simple search only; this is Roadmap step 3.*
-
 For when one word isn't enough — e.g. "Chipotle, but only the $50–80 purchases." Advanced
 search lets you set several filters at once and only matches entries that satisfy all of
 them:

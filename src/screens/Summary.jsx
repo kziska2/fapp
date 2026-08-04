@@ -3,10 +3,11 @@ import { useVault } from '../storage/VaultContext.jsx';
 import { listBudgetLines } from '../storage/queries/budget.js';
 import { spendByCategoryForRange, incomeForRange, transactionsForRange } from '../storage/queries/transactions.js';
 import { investmentTotalsByType, investmentsForRange } from '../storage/queries/investments.js';
-import { searchIndex, vendorDetail, categoryDetail, noteDetail } from '../storage/queries/search.js';
+import { searchIndex, vendorDetail, categoryDetail, noteDetail, typeDetail } from '../storage/queries/search.js';
 import { categoryColor } from '../components/categoryColors.js';
 import Ring from '../components/Ring.jsx';
 import TxRow from '../components/TxRow.jsx';
+import AdvancedSearch from '../components/AdvancedSearch.jsx';
 import { fmt, fmtCents, periodRange, periodLabel, scaleMonthly } from '../utils/format.js';
 
 const SAVINGS_INVESTMENT_TYPES = ['Retirement (401k/IRA)', 'Short-term savings', 'Big-purchase savings'];
@@ -28,6 +29,7 @@ function SearchBox({ db }) {
     setSuggestions([]);
     if (s.kind === 'vendor') setResult(vendorDetail(db, s.label));
     else if (s.kind === 'category') setResult(categoryDetail(db, s.label));
+    else if (s.kind === 'type') setResult(typeDetail(db, s.label));
     else setResult(noteDetail(db, s.label));
   };
 
@@ -69,6 +71,14 @@ function SearchBox({ db }) {
                 <div>This month<b>{fmt(result.thisMonth)}</b></div>
                 <div>This year<b>{fmt(result.thisYear)}</b></div>
                 {result.pctOfBudget !== null && <div>% of budget<b>{result.pctOfBudget}%</b></div>}
+              </>
+            )}
+            {result.kind === 'type' && (
+              <>
+                <div>This month<b>{fmt(result.thisMonth)}</b></div>
+                <div>This year<b>{fmt(result.thisYear)}</b></div>
+                {result.pctOfBudgetIsType !== null && <div>Share of budget<b>{result.pctOfBudgetIsType}%</b></div>}
+                {result.pctOfTypeSpent !== null && <div>Spent of that<b>{result.pctOfTypeSpent}%</b></div>}
               </>
             )}
             {result.kind === 'note' && <div>Total<b>{fmt(result.total)}</b></div>}
@@ -139,6 +149,7 @@ export default function Summary() {
   return (
     <div>
       <SearchBox db={db} />
+      <AdvancedSearch db={db} notifyChanged={notifyChanged} version={version} />
 
       <div className="foldertabs" style={{ marginTop: 10 }}>
         {['week', 'month', 'year'].map((p) => (
