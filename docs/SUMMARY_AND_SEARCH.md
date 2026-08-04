@@ -14,18 +14,17 @@ Four things you see the moment you open the tab, plus the search bar:
 shown as both a dollar amount and a percent (actual spending this month vs. the sum of
 your budget lines).
 
-**Earned this year, and whether you're on track** — your total income so far this year,
-with an ahead/behind indicator:
-- The **first year** you use the app, you enter an **expected yearly earnings** figure
-  once; the app compares what you've earned so far against the share of that figure you'd
-  expect by this point in the year.
-- **Every year after**, there's no need to re-enter anything — the app compares this
-  year's earnings-to-date against **what you'd earned by the same point last year**.
+**Earned, against an ambitious goal** — your total real, logged income so far this period,
+shown as a ring against the **earnings goal** you set on the Budget tab (`docs/BUDGET.md`).
+This is deliberately not a comparison to last year or to any "expected" figure — it's your
+own target, meant to be ambitious. Week/Month/Year switches which period the ring covers.
 
-**Invested** — how much money you've put into your investments, shown as **this year's
-contributions** and **all-time contributed**, together on one gauge. This is a running
-total of money in (cost basis), not current market value — the app doesn't track prices or
-returns; that's out of scope, and you can check that elsewhere.
+**Invested, against your savings goals** — a ring showing this period's total Investments
+contributions against the **combined total of your three savings-category budgets**
+(Retirement saving + Short term savings + Savings, set on the Budget tab) — the aggregate
+"savings goal." All-time contributed shown as a plain number below the ring. This is a
+running total of money in (cost basis), not current market value — the app doesn't track
+prices or returns; that's out of scope, and you can check that elsewhere.
 
 **Last three purchases** — your three most recent expense entries, so you can see at a
 glance what you last spent money on.

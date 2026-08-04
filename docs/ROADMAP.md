@@ -36,11 +36,16 @@ debt section.
    (combine date, amount, category, type, merchant, and note filters) and saved searches.
    Full spec: `docs/SUMMARY_AND_SEARCH.md`.
 
-4. **Manual income & richer summaries.** Make sure income entry is well-supported
-   (already partially there) and extend the summary screen with the drill-downs described
-   in the original request, plus the new at-a-glance stats: budget spent this month,
-   earned this year with an on-track indicator, invested (this year + all-time
-   contributions), and last three purchases. Full spec: `docs/SUMMARY_AND_SEARCH.md`.
+4. **Daily log, budget, & richer summaries.** Build the default Daily Log tab (fast
+   expense entry, per-paycheck income logging — real deposits only, no expected income)
+   and the Budget tab (per-category monthly budgets across necessary/discretionary/savings
+   types, an income estimate, an ambitious earnings goal, and a custom date-range budget
+   override for exceptional periods like a trip). Extend the summary screen with the
+   drill-downs described in the original request, plus the at-a-glance stats: budget spent
+   this month, earned against the earnings goal, invested against the combined savings
+   goal, and last three purchases. Also re-align the Investments `Investment type` field
+   so it maps 1:1 to the three savings-type Budget categories. Full specs:
+   `docs/DAILY_LOG.md`, `docs/BUDGET.md`, `docs/SUMMARY_AND_SEARCH.md`.
 
 5. **On-demand readable spreadsheet export.** The one intentional unencrypted output,
    built last since it's an add-on, not core functionality.

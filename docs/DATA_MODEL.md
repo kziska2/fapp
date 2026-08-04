@@ -22,6 +22,10 @@ Every entry you log — an expense or a bit of income.
 Today's prototype has a single free-text "detail" field per transaction; the merchant
 becomes its own tracked field so totals are reliable (see next section).
 
+**Savings-type categories never appear here.** Retirement saving, Short term savings, and
+Savings (see Categories below) aren't logged as transactions at all — they're tracked
+through the Investments table instead. See `docs/BUDGET.md` for why.
+
 ## Merchants (new)
 
 A tidy, reusable list of where money was spent — this is what makes "Chipotle, last
@@ -44,6 +48,19 @@ splitting your totals across near-duplicates.
 
 Both are the same underlying query with or without a date filter — reliable because the
 merchant name is consistent, not because of any special-casing.
+
+## Jobs / income sources (new)
+
+A tidy, reusable list of where your paychecks come from — parallel to Merchants, but for
+income instead of spending.
+
+| Field | What it means |
+|---|---|
+| Name | The job or income source, e.g. "Riverside Design Co." |
+| First seen / last seen | Automatically tracked, for convenience |
+
+When logging a paycheck on Daily Log, you pick a job you've used before (autocomplete) or
+add a new one — the same pick-or-add pattern as Merchants.
 
 ## Search
 
@@ -69,39 +86,63 @@ type, merchant, note text — plus:
 
 ## Categories
 
-The existing category list from the prototype, customizable (add/rename/re-type):
+Every category has a **type**: necessary, discretionary, or savings. Necessary and
+discretionary categories are logged as expenses on Daily Log, with the type editable
+per-transaction. Savings-type categories are never logged as expenses — see "Savings
+categories" under Budget, below.
 
-- Groceries, Rent/Mortgage, Utilities, Car, Health insurance, Self maintenance, Supplies
-  (all "necessary" by default)
-- Eating out, Entertainment, Travel, Items/Shopping, Other (all "discretionary" by
-  default)
+Customizable (add/rename/retype/remove) — the app starts with this preset list:
 
-Each category has a default necessary/discretionary type, editable per-transaction.
+| Category | Type | Covers |
+|---|---|---|
+| Rent | Necessary | Rent or mortgage |
+| Utilities | Necessary | Gas, electric, wifi, phone bill |
+| Transportation | Necessary | Car insurance, gas, maintenance, train, bus |
+| Groceries | Necessary | Food and household shopping |
+| Eating out / order in | Discretionary | Restaurants, takeout, delivery |
+| Health | Necessary | Insurance, gym membership, dental, medications, therapy |
+| Dependents | Necessary | Pets, child care, family or anyone you support |
+| Supplies | Necessary | Toilet paper, cleaning supplies, shampoo, haircuts, household items |
+| Fun | Discretionary | Life-enriching spending — vacations, hobbies |
+| Entertainment | Discretionary | Movies, streaming, show tickets, shopping |
+| Debts | Necessary | Payments toward debt (forward hook to the future debt tab — see `docs/ROADMAP.md`) |
+| Education | Necessary | Tuition, courses, books |
+| Giving | Discretionary | Gifts and charity |
+| Retirement saving | Savings | Retirement contributions — tracked via Investments |
+| Short term savings | Savings | Near-term set-aside, e.g. an emergency fund — via Investments |
+| Savings | Savings | Set-aside for a big purchase — a house, a car — via Investments |
+
+Full behavior lives in `docs/BUDGET.md`.
 
 ## Budget
 
-Monthly budget as already modeled in the prototype:
+Set on the Budget tab; everything else (Daily Log's spending ring, Summary's rings)
+reads from this. Full plain-language behavior in `docs/BUDGET.md`.
 
 | Field | What it means |
 |---|---|
-| Income mode | Monthly or annual gross salary |
-| Gross income, tax rate | Used to estimate net monthly income |
-| Budget lines | Named allocations (e.g. "Rent," "Savings/Investments") with a dollar amount, each optionally linked to a category for spend tracking |
+| Monthly income estimate | A planning figure you type in to size your budget — separate from real paycheck logging. Can later be switched to a calculated figure once a month of real paychecks exists. |
+| Earnings goal | A separate, deliberately ambitious figure — what actual earned-to-date is compared against on Summary. Not used to size the budget. |
+| Budget lines | One per category, a monthly dollar amount. Month is the base unit — week (÷4.3) and year (×12) are derived, not entered separately. |
+| Custom period override | An optional start date, end date, and one total budget for that span (e.g. a vacation) — supersedes the derived weekly figure for those days. |
 
-The home-screen "how much have I spent in each category" view compares actual spending
-(from transactions) against these budget lines for the current month.
+**Savings categories work differently.** For Retirement saving, Short term savings, and
+Savings, the monthly amount set here *is* the goal — there's no expense entry. Progress
+is calculated from the Investments table instead, matched by investment type (see
+Investments, below, for the mapping).
 
 ## Manual income
 
-Income is logged as a transaction (`type = income`) with a source (salary, freelance,
-investment, gift, other) — no separate income table needed; it's the same transactions
-list filtered by type.
+Income is logged as a transaction (`type = income`) — no separate income table needed;
+it's the same transactions list filtered by type. Each entry carries a **job/income
+source** (from the reusable Jobs list above), an **amount received**, and a **date
+received**.
 
-**Income baseline (for "are you on track this year")** — the first year you use the app,
-you enter an **expected yearly earnings** figure once; it's saved as your baseline for
-that year. Every year after, no re-entry is needed — the baseline becomes what you
-actually earned the prior year (summed from your income transactions). See
-`docs/SUMMARY_AND_SEARCH.md` for how this drives the Summary tab.
+**Every income entry is a real, already-landed deposit.** There is no field anywhere for
+expected, projected, or standing-salary income — logging a paycheck as it lands is meant
+to build the habit of checking each deposit. The Budget tab's income estimate and
+earnings goal (see Budget, above) are separate, planning-only figures — they're never
+populated from or confused with real income entries.
 
 ## Investments
 
@@ -114,15 +155,28 @@ One row per position, as already modeled in the prototype:
 | Shares | Quantity held |
 | Cost per share | What you paid |
 | Account type | Pre-tax (Traditional), Post-tax (Roth), or Taxable |
-| Investment type | Retirement (401k/IRA), Savings, Brokerage, HSA, Other |
+| Investment type | Retirement (401k/IRA), Short-term savings, Big-purchase savings, Brokerage, HSA, Other |
 | Note | Optional, e.g. which brokerage/account |
 
 This is a manual ledger of what you hold and where — not a live market-price feed (no
 external service needed, keeps things free and simple). The Summary tab's "invested"
 stat (see `docs/SUMMARY_AND_SEARCH.md`) sums cost (shares × cost per share) across
-positions — this year's (filtered by the new Date field) and all-time (no date filter)
+positions — this period's (filtered by the Date field) and all-time (no date filter)
 — using cost basis only; it doesn't need a market-value/price field, since it's about
 money put in, not what it's grown or shrunk to.
+
+**Investment type maps directly to the three savings-type Budget categories** (see
+Categories and Budget, above), so progress against a savings goal can be calculated
+without any extra linking field:
+
+| Investment type | Matches Budget category |
+|---|---|
+| Retirement (401k/IRA) | Retirement saving |
+| Short-term savings | Short term savings |
+| Big-purchase savings | Savings |
+
+Brokerage, HSA, and Other are tracked here but aren't measured against a specific Budget
+savings goal.
 
 ## Retirement planning (not stored data, but derived from settings)
 
