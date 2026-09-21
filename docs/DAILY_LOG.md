@@ -28,6 +28,33 @@ Savings-type categories (Retirement saving, Short term savings, Savings) don't s
 here — those are tracked through the Investments tab instead. See `docs/BUDGET.md` for
 why.
 
+## Auto expenses (recurring bills)
+
+A third tab next to Log expense and Log paycheck, for a bill or subscription you'd
+otherwise type in by hand every time — rent, Netflix, a car payment. Set it up once and
+it logs itself.
+
+Set up a recurring expense with:
+- **Name** — what shows up in the log, e.g. "Rent" or "Netflix"
+- **Amount**, **Category**, **Purchase type** — same as a one-off expense
+- **Frequency** — monthly (pick a day of the month) or weekly (pick a day of the week)
+- **Starting** — when the schedule begins
+- Optionally, **an end date** and/or **a number of times to repeat** — whichever is hit
+  first stops it
+
+Once due, it logs itself as an ordinary expense — same running list, same budget ring,
+same edit/delete — with no separate "auto" marker. There's nothing to check or confirm;
+it just appears the next time you open the app on or after the due date. If the app sits
+closed past more than one due date (e.g. a week away), every missed date gets logged when
+you next open it, not just the most recent one.
+
+The schedule itself (frequency, day, start date) is fixed once you create it — change the
+amount, category, purchase type, or end date any time, but a change to the schedule means
+deleting and re-adding it. **Pause** stops it from firing without deleting the rule (handy
+for a subscription you've paused, not cancelled); **Delete** removes the rule going
+forward but leaves anything it already logged untouched, just like removing a category
+doesn't touch past transactions in that category.
+
 ## Logging a paycheck
 
 A separate small action on the same tab, not mixed into the expense form. Capture:

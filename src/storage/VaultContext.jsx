@@ -2,6 +2,8 @@ import { createContext, useContext, useRef, useState, useCallback, useEffect } f
 import { loadVaultRecord, saveVaultRecord } from './persist.js';
 import { createVault, openVault, lockBytes, WrongPassphraseError } from '../crypto/vault.js';
 import { createDatabase, openDatabase, exportDatabase } from './db.js';
+import { materializeDueRecurring } from './queries/recurring.js';
+import { todayStr } from '../utils/format.js';
 
 const VaultContext = createContext(null);
 
@@ -69,12 +71,15 @@ export function VaultProvider({ children }) {
       await saveVaultRecord({ salt, kdfParams, iv, ciphertext });
       dbRef.current = db; keyRef.current = key; saltRef.current = salt; kdfParamsRef.current = kdfParams;
       setStatus('ready');
+      // A brand-new vault has no recurring rules yet, but this keeps the two
+      // entry points (create vs. unlock) doing the exact same startup sequence.
+      if (materializeDueRecurring(db, todayStr()) > 0) await persistNow();
     } catch (e) {
       setError(e.message || 'Something went wrong creating your vault.');
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [persistNow]);
 
   const handleUnlock = useCallback(async (passphrase) => {
     setBusy(true); setError('');
@@ -84,12 +89,15 @@ export function VaultProvider({ children }) {
       const db = await openDatabase(dbBytes);
       dbRef.current = db; keyRef.current = key; saltRef.current = record.salt; kdfParamsRef.current = record.kdfParams;
       setStatus('ready');
+      // Catches up any recurring expense whose date has passed since the vault
+      // was last opened — e.g. rent due while the app sat closed for a week.
+      if (materializeDueRecurring(db, todayStr()) > 0) await persistNow();
     } catch (e) {
       setError(e instanceof WrongPassphraseError ? e.message : 'Something went wrong unlocking your data.');
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [persistNow]);
 
   // A quick app-switch or phone lock shouldn't drop the last few seconds of
   // edits sitting in the debounce window, so flush immediately when hidden.

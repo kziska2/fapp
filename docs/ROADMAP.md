@@ -10,7 +10,7 @@ and persisted locally — no cloud sync yet. Deployed and installable today at
 
 All six tabs work:
 
-- **Daily log** — expense/paycheck entry, spending ring, monthly log
+- **Daily log** — expense/paycheck entry, recurring auto-expenses, spending ring, monthly log
 - **Budget** — real-income-based budgeting, Buffer, necessary/discretionary/savings
   category lists (add/edit/delete), exceptional-period budgets (add/edit/delete)
 - **Summary** — week/month/year stats with prev/next navigation, category rings,

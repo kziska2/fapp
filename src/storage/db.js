@@ -31,6 +31,26 @@ CREATE TABLE jobs (
   last_seen TEXT NOT NULL
 );
 
+-- A recurring rule, not a transaction itself — materializeDueRecurring() turns
+-- a due occurrence into a normal row in transactions (recurring_id links back
+-- here), so a generated entry is indistinguishable from a manually logged one
+-- everywhere else in the app (budget rings, search, edit, delete).
+CREATE TABLE recurring_expenses (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  amount REAL NOT NULL,
+  category_id INTEGER NOT NULL REFERENCES categories(id),
+  necessary TEXT NOT NULL CHECK (necessary IN ('necessary', 'discretionary')),
+  frequency TEXT NOT NULL CHECK (frequency IN ('weekly', 'monthly')),
+  anchor_day INTEGER NOT NULL,
+  start_date TEXT NOT NULL,
+  end_date TEXT,
+  occurrences_total INTEGER,
+  occurrences_done INTEGER NOT NULL DEFAULT 0,
+  next_due_date TEXT NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE TABLE transactions (
   id INTEGER PRIMARY KEY,
   date TEXT NOT NULL,
@@ -40,7 +60,8 @@ CREATE TABLE transactions (
   merchant_id INTEGER REFERENCES merchants(id),
   job_id INTEGER REFERENCES jobs(id),
   necessary TEXT CHECK (necessary IN ('necessary', 'discretionary')),
-  note TEXT
+  note TEXT,
+  recurring_id INTEGER REFERENCES recurring_expenses(id)
 );
 
 CREATE TABLE budget_lines (
@@ -94,6 +115,29 @@ function migrate(db) {
       filters TEXT NOT NULL
     );
   `);
+  db.run(`
+    CREATE TABLE IF NOT EXISTS recurring_expenses (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL,
+      amount REAL NOT NULL,
+      category_id INTEGER NOT NULL REFERENCES categories(id),
+      necessary TEXT NOT NULL CHECK (necessary IN ('necessary', 'discretionary')),
+      frequency TEXT NOT NULL CHECK (frequency IN ('weekly', 'monthly')),
+      anchor_day INTEGER NOT NULL,
+      start_date TEXT NOT NULL,
+      end_date TEXT,
+      occurrences_total INTEGER,
+      occurrences_done INTEGER NOT NULL DEFAULT 0,
+      next_due_date TEXT NOT NULL,
+      active INTEGER NOT NULL DEFAULT 1
+    );
+  `);
+  // sql.js has no ALTER TABLE ... ADD COLUMN IF NOT EXISTS, so check first —
+  // vaults saved before recurring_id existed would otherwise fail this every open.
+  const txCols = query(db, 'PRAGMA table_info(transactions)').map((c) => c.name);
+  if (!txCols.includes('recurring_id')) {
+    db.run('ALTER TABLE transactions ADD COLUMN recurring_id INTEGER REFERENCES recurring_expenses(id)');
+  }
 }
 
 // Matches the preset list in docs/DATA_MODEL.md.
