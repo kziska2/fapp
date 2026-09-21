@@ -383,6 +383,11 @@ input, select, textarea { font-size: 16px; font-family: inherit; }
 .period-card .pamt { margin-left: auto; font-size: 13px; font-weight: 700; flex-shrink: 0; }
 .period-card .pedit, .period-card .del { color: var(--text-tertiary); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 0; }
 .period-card .pedit svg, .period-card .del svg { width: 13px; height: 13px; display: block; }
+.period-card.paused { opacity: 0.55; }
+.recur-toggle {
+  font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; flex-shrink: 0;
+  border: 1px solid var(--border-secondary); background: none; color: var(--text-secondary); cursor: pointer; font-family: inherit;
+}
 .period-form { margin-top: 8px; }
 
 /* ── Investments tab ──────────────────────────────────────────────────── */

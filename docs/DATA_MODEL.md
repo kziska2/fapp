@@ -53,6 +53,28 @@ splitting your totals across near-duplicates.
 Both are the same underlying query with or without a date filter — reliable because the
 merchant name is consistent, not because of any special-casing.
 
+## Recurring expenses (new)
+
+A rule for a bill or subscription that logs itself, rather than a transaction being typed
+in each time. Full behavior in `docs/DAILY_LOG.md`'s "Auto expenses" section.
+
+| Field | What it means |
+|---|---|
+| Name | What shows up in the log, e.g. "Rent" |
+| Amount, category, necessary/discretionary | Same as a manual expense |
+| Frequency | Monthly or weekly |
+| Day | Day of month (monthly) or day of week (weekly) |
+| Starting | When the schedule begins |
+| Ends on / stop after | Optional — either an end date or a count of occurrences, whichever comes first |
+| Next due date | Tracked automatically as occurrences fire |
+| Active | Whether the rule is currently firing (off while paused, or once it's ended) |
+
+When a rule's date comes due, it generates a normal row in Transactions (linked back to
+the rule so the two stay associated) — from then on it's indistinguishable from something
+typed in by hand: same running list, same budget ring, same edit/delete. Deleting the rule
+only stops future occurrences; anything it already generated stays in the log, the same
+way removing a category leaves its past transactions alone.
+
 ## Jobs / income sources (new)
 
 A tidy, reusable list of where your paychecks come from — parallel to Merchants, but for

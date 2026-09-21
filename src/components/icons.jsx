@@ -75,6 +75,14 @@ export function CalculatorIcon(props) {
   );
 }
 
+export function RepeatIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" />
+    </svg>
+  );
+}
+
 export function SettingsIcon(props) {
   return (
     <svg {...base} {...props}>
