@@ -93,6 +93,28 @@ export function incomeForRange(db, startDate, endDate) {
   )[0].total;
 }
 
+// The Summary report's income-by-source breakdown — parallel to
+// spendByCategoryForRange, but grouped by job instead of category, and
+// joined to the job name since the report needs labels, not just ids.
+export function incomeByJobForRange(db, startDate, endDate) {
+  return query(
+    db,
+    `SELECT t.job_id AS jobId, COALESCE(j.name, 'Uncategorized') AS label, COALESCE(SUM(t.amount), 0) AS total
+     FROM transactions t
+     LEFT JOIN jobs j ON j.id = t.job_id
+     WHERE t.type = 'income' AND t.date >= ? AND t.date <= ?
+     GROUP BY t.job_id`,
+    [startDate, endDate]
+  );
+}
+
+// The real span of logged activity — used to size "All time" averages
+// against actual history instead of the sentinel 0000–9999 range.
+export function transactionDateBounds(db) {
+  const row = query(db, 'SELECT MIN(date) AS minDate, MAX(date) AS maxDate FROM transactions')[0];
+  return { minDate: row?.minDate || null, maxDate: row?.maxDate || null };
+}
+
 // Summary's activity-record list — every expense and paycheck in the selected
 // period (whatever week/month/year the period nav is on), newest first.
 export function transactionsForRange(db, startDate, endDate) {

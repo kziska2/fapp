@@ -443,3 +443,36 @@ input, select, textarea { font-size: 16px; font-family: inherit; }
   cursor: pointer; font-family: inherit;
 }
 .scard { background: var(--bg-primary); border: 1px solid var(--border-tertiary); border-radius: var(--radius); padding: 12px 14px; }
+
+/* ── Spending report (Summary tab) ───────────────────────────────────── */
+.preset-row { display: flex; gap: 4px; margin-bottom: 10px; }
+.preset-btn {
+  flex: 1; padding: 7px 2px; border-radius: 8px; border: 1px solid var(--border-secondary);
+  background: none; color: var(--text-secondary); font-size: 10.5px; font-weight: 650;
+  cursor: pointer; font-family: inherit; text-align: center;
+}
+.preset-btn.active { border-color: var(--accent-necessary); background: var(--accent-necessary-bg); color: var(--accent-necessary); }
+.report-range-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.report-range-row .rlabel { font-size: 12.5px; font-weight: 700; }
+.report-download-btn {
+  width: 100%; padding: 10px; border: none; border-radius: 9px; cursor: pointer;
+  background: var(--accent-necessary); color: var(--accent-necessary-bg); font-size: 12.5px; font-weight: 650;
+  font-family: inherit; margin-bottom: 4px;
+}
+.report-download-hint { font-size: 9.5px; color: var(--text-tertiary); margin: 0 0 12px; line-height: 1.4; }
+.rtable-wrap { overflow-x: auto; border: 1px solid var(--border-tertiary); border-radius: 8px; }
+.rtable { font-size: 11px; width: 100%; border-collapse: collapse; }
+.rtable th { font-size: 9.5px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; text-align: right; padding: 6px 8px; background: var(--bg-secondary); white-space: nowrap; }
+.rtable th:first-child { text-align: left; }
+.rtable td { padding: 6px 8px; text-align: right; border-top: 1px solid var(--border-tertiary); white-space: nowrap; }
+.rtable td:first-child { text-align: left; font-weight: 600; }
+.rtable .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.chart-legend { display: flex; gap: 10px; font-size: 9.5px; color: var(--text-secondary); }
+.chart-legend .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 3px; }
+.chart-box { background: var(--bg-secondary); border: 1px solid var(--border-tertiary); border-radius: 8px; padding: 10px 10px 4px; }
+.chart-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.chart-row .clabel { width: 108px; flex-shrink: 0; font-size: 10px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chart-row .ctrack { flex: 1; height: 10px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; }
+.chart-row .cfill { height: 100%; border-radius: 4px; }
+.chart-row .cval { width: 62px; flex-shrink: 0; text-align: right; font-size: 10.5px; font-weight: 650; }
+.report-start-over { display: block; margin: 14px auto 0; border: none; background: none; color: var(--text-secondary); font-size: 11.5px; font-weight: 650; cursor: pointer; font-family: inherit; padding: 6px 4px; }
