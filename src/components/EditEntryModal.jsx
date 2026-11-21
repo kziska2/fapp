@@ -169,20 +169,22 @@ export default function EditEntryModal({ tx, onClose }) {
                 <input type="number" step="0.01" min="0" value={form.cost} onChange={(e) => set('cost', e.target.value)} required />
               </div>
             </div>
-            <div className="grid2" style={{ marginBottom: 8 }}>
-              <div className="field">
-                <label>Account type</label>
-                <select value={form.account} onChange={(e) => set('account', e.target.value)}>
-                  {ACCOUNT_TYPES.map((a) => <option key={a}>{a}</option>)}
-                </select>
+            {(tx.account_type || tx.investment_type) && (
+              <div className="grid2" style={{ marginBottom: 8 }}>
+                <div className="field">
+                  <label>Account type</label>
+                  <select value={form.account} onChange={(e) => set('account', e.target.value)}>
+                    {ACCOUNT_TYPES.map((a) => <option key={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div className="field">
+                  <label>Investment type</label>
+                  <select value={form.investType} onChange={(e) => set('investType', e.target.value)}>
+                    {INVESTMENT_TYPES.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
               </div>
-              <div className="field">
-                <label>Investment type</label>
-                <select value={form.investType} onChange={(e) => set('investType', e.target.value)}>
-                  {INVESTMENT_TYPES.map((t) => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
+            )}
             <div className="field">
               <label>Note <span style={{ fontWeight: 400, color: 'var(--text-tertiary)' }}>(optional)</span></label>
               <input type="text" value={form.note} onChange={(e) => set('note', e.target.value)} />

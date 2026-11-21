@@ -20,7 +20,7 @@ export default function TxRow({ tx, onDelete, onClick }) {
         <div className="mid">
           <div className="cat">
             {tx.ticker}
-            <span className="detail"> · {tx.investment_type}</span>
+            {tx.investment_type && <span className="detail"> · {tx.investment_type}</span>}
           </div>
         </div>
         <div className="amt" style={{ color: 'var(--accent-purple)' }}>

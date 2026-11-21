@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useVault } from '../storage/VaultContext.jsx';
 import { listBudgetLines } from '../storage/queries/budget.js';
 import { spendByCategoryForRange, incomeForRange, transactionsForRange, transactionDateBounds } from '../storage/queries/transactions.js';
-import { investmentTotalsByType, investmentsForRange } from '../storage/queries/investments.js';
+import { investmentTotalForRange, investmentAllTimeTotal, investmentsForRange } from '../storage/queries/investments.js';
 import { searchIndex, vendorDetail, categoryDetail, noteDetail, typeDetail } from '../storage/queries/search.js';
 import { categoryColor } from '../components/categoryColors.js';
 import { buildSummaryReport } from '../utils/summaryReport.js';
@@ -13,8 +13,6 @@ import AdvancedSearch from '../components/AdvancedSearch.jsx';
 import EditEntryModal from '../components/EditEntryModal.jsx';
 import { fmt, fmtCents, fmtShortDate, periodRange, periodLabel, scaleMonthly, todayStr } from '../utils/format.js';
 
-const SAVINGS_INVESTMENT_TYPES = ['Retirement (401k/IRA)', 'Short-term savings', 'Big-purchase savings'];
-const ALL_TIME_RANGE = { start: '0000-01-01', end: '9999-12-31' };
 const REPORT_PRESETS = [
   { id: 'week', label: 'This week' },
   { id: 'month', label: 'This month' },
@@ -342,8 +340,8 @@ export default function Summary() {
 
   const spendByCat = useMemo(() => spendByCategoryForRange(db, range.start, range.end), [db, version, range.start, range.end]);
   const earned = useMemo(() => incomeForRange(db, range.start, range.end), [db, version, range.start, range.end]);
-  const investedByType = useMemo(() => investmentTotalsByType(db, range.start, range.end), [db, version, range.start, range.end]);
-  const investedAllTimeByType = useMemo(() => investmentTotalsByType(db, ALL_TIME_RANGE.start, ALL_TIME_RANGE.end), [db, version]);
+  const invested = useMemo(() => investmentTotalForRange(db, range.start, range.end), [db, version, range.start, range.end]);
+  const allTimeInvested = useMemo(() => investmentAllTimeTotal(db), [db, version]);
   const record = useMemo(() => {
     const txs = transactionsForRange(db, range.start, range.end).map((t) => ({ ...t, _key: `tx-${t.id}` }));
     // Keep every field from the investments row (not just what TxRow displays) —
@@ -371,9 +369,7 @@ export default function Summary() {
     .sort((a, b) => a.label.localeCompare(b.label));
 
   const savingsGoal = scaleMonthly(budgetLines.filter((l) => l.type === 'savings').reduce((s, l) => s + l.amount_monthly, 0), period);
-  const invested = SAVINGS_INVESTMENT_TYPES.reduce((s, t) => s + (investedByType[t] || 0), 0);
   const investedPct = savingsGoal > 0 ? Math.min((invested / savingsGoal) * 100, 100) : 0;
-  const allTimeInvested = SAVINGS_INVESTMENT_TYPES.reduce((s, t) => s + (investedAllTimeByType[t] || 0), 0);
 
   return (
     <div>

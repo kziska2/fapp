@@ -4,12 +4,15 @@ export function listInvestments(db) {
   return query(db, 'SELECT * FROM investments ORDER BY date DESC, id DESC');
 }
 
+// Account type / investment type are no longer collected on new entries (the
+// quick-add form doesn't ask) — both columns stay NOT NULL, so an omitted one
+// is stored as '' rather than null, and every reader treats '' as "unset".
 export function addInvestment(db, { date, ticker, shares, costPerShare, accountType, investmentType, note }) {
   return run(
     db,
     `INSERT INTO investments (date, ticker, shares, cost_per_share, account_type, investment_type, note)
      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [date, ticker, shares, costPerShare, accountType, investmentType, note || null]
+    [date, ticker, shares, costPerShare, accountType || '', investmentType || '', note || null]
   );
 }
 
@@ -18,7 +21,7 @@ export function updateInvestment(db, id, { date, ticker, shares, costPerShare, a
     db,
     `UPDATE investments SET date = ?, ticker = ?, shares = ?, cost_per_share = ?, account_type = ?, investment_type = ?, note = ?
      WHERE id = ?`,
-    [date, ticker, shares, costPerShare, accountType, investmentType, note || null, id]
+    [date, ticker, shares, costPerShare, accountType || '', investmentType || '', note || null, id]
   );
 }
 
@@ -46,4 +49,15 @@ export function investmentsForRange(db, startDate, endDate) {
 
 export function investmentAllTimeTotal(db) {
   return query(db, 'SELECT COALESCE(SUM(shares * cost_per_share), 0) AS total FROM investments')[0].total;
+}
+
+// The combined "invested this period" figure (Investments tab, Summary tab) —
+// every position regardless of type, now that type is no longer collected by
+// default. Parallel to investmentAllTimeTotal, just date-bounded.
+export function investmentTotalForRange(db, startDate, endDate) {
+  return query(
+    db,
+    'SELECT COALESCE(SUM(shares * cost_per_share), 0) AS total FROM investments WHERE date >= ? AND date <= ?',
+    [startDate, endDate]
+  )[0].total;
 }
