@@ -17,7 +17,7 @@ All six tabs work:
   Earned/Invested, a full activity record (expenses, income, and investment
   contributions) for the selected period, simple search, and advanced search with saved
   searches
-- **Investments** — position ledger, savings-goal progress rings
+- **Investments** — position ledger, combined savings-goal progress ring
 - **Retirement** — calculator with a Chart.js trajectory visualization
 - **Categories** (settings) — add/rename/retype/remove categories, three-way typed
 
@@ -47,12 +47,20 @@ spreadsheet export, and the debt section.
    necessary/discretionary/savings types, real income with a Buffer figure, and a
    custom date-range budget override for exceptional periods), plus Summary's
    at-a-glance stats (budget spent this month, earned, invested against the combined
-   savings goal, last three purchases). The Investments `Investment type` field is
-   re-aligned to map 1:1 to the three savings-type Budget categories. Full specs:
-   `docs/DAILY_LOG.md`, `docs/BUDGET.md`, `docs/SUMMARY_AND_SEARCH.md`.
+   savings goal, last three purchases). Full specs: `docs/DAILY_LOG.md`,
+   `docs/BUDGET.md`, `docs/SUMMARY_AND_SEARCH.md`.
 
-5. **On-demand readable spreadsheet export.** The one intentional unencrypted output,
-   built last since it's an add-on, not core functionality.
+   The Investments tab originally mapped its `Investment type` field 1:1 to the three
+   savings-type Budget categories, for a per-category goal breakdown. That's since been
+   simplified back to one combined "invested" figure against one combined goal — Account
+   type and Investment type are legacy fields now, still shown on positions logged before
+   the change, no longer asked for on new ones (`docs/DATA_MODEL.md`). A per-category
+   breakdown via "buckets" defined on the Categories tab is a possible later direction.
+
+5. ~~**On-demand readable spreadsheet export.**~~ **Done** — the Summary tab's "Generate
+   summary" builds a spreadsheet-style report (overview, category/income breakdowns, a
+   chart) for a chosen time frame, with a "Download as spreadsheet" `.xlsx` export
+   alongside it. This absorbed what this step had originally scoped.
 
 6. **Debt payoff section (later).** Deliberately deferred — will be scoped and designed
    in a future planning pass once the rest of the app is solid.

@@ -191,8 +191,6 @@ One row per position, as already modeled in the prototype:
 | Ticker / name | e.g. VOO |
 | Shares | Quantity held |
 | Cost per share | What you paid |
-| Account type | Pre-tax (Traditional), Post-tax (Roth), or Taxable |
-| Investment type | Retirement (401k/IRA), Short-term savings, Big-purchase savings, Brokerage, HSA, Other |
 | Note | Optional, e.g. which brokerage/account |
 
 This is a manual ledger of what you hold and where — not a live market-price feed (no
@@ -202,18 +200,19 @@ positions — this period's (filtered by the Date field) and all-time (no date f
 — using cost basis only; it doesn't need a market-value/price field, since it's about
 money put in, not what it's grown or shrunk to.
 
-**Investment type maps directly to the three savings-type Budget categories** (see
-Categories and Budget, above), so progress against a savings goal can be calculated
-without any extra linking field:
+**Progress against the savings goal is one combined figure**, not split per category:
+"invested this period" is every position's cost summed together, compared against one
+combined goal — the sum of the three savings-type Budget categories (Retirement saving +
+Short term savings + Savings). There's no field linking a given position to a specific
+one of those three goals.
 
-| Investment type | Matches Budget category |
-|---|---|
-| Retirement (401k/IRA) | Retirement saving |
-| Short-term savings | Short term savings |
-| Big-purchase savings | Savings |
-
-Brokerage, HSA, and Other are tracked here but aren't measured against a specific Budget
-savings goal.
+**Account type and Investment type are legacy fields**, no longer collected on new
+entries — a few early positions logged before this change still carry them (Account
+type: Pre-tax/Post-tax/Taxable; Investment type: Retirement (401k/IRA), Short-term
+savings, Big-purchase savings, Brokerage, HSA, Other), and those still display and stay
+editable on the entries that already have them, but the Add-investment form doesn't ask
+for either anymore. A per-category savings breakdown (e.g., "buckets" defined on the
+Categories tab) is a possible future direction, not built — see `docs/ROADMAP.md`.
 
 Like transactions, any position can be tapped — on the Investments tab or in Summary's
 activity record — to edit any of its fields later.

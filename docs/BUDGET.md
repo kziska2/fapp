@@ -99,18 +99,12 @@ view on Summary always adds up consistently.
 
 ### Savings categories work differently
 
-For Retirement saving, Short term savings, and Savings, the monthly amount you set here
-**is** the goal — there's no separate expense entry to log. Instead, progress is
-calculated from what you log on the Investments tab, matched by investment type:
-
-| Budget category | Matches Investments entries of type |
-|---|---|
-| Retirement saving | Retirement (401k/IRA) |
-| Short term savings | Short-term savings |
-| Savings | Big-purchase savings |
-
-(Investments entries logged as Brokerage, HSA, or Other aren't tied to a specific Budget
-savings goal — they're tracked, just not measured against a target here.)
+For Retirement saving, Short term savings, and Savings, the monthly amounts you set here
+are added together **into one combined goal** — there's no separate expense entry to log.
+Progress is calculated from everything logged on the Investments tab, all positions
+summed together, compared against that combined figure. There's no per-category
+breakdown (a given contribution isn't tied to any one of the three) — see
+`docs/DATA_MODEL.md`'s Investments section.
 
 ## Custom budget for an exceptional period
 
